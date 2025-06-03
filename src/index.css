@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500;700&display=swap');
+
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    @layer base {
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+
+        --primary: 260 70% 60%; 
+        --primary-foreground: 260 70% 98%;
+
+        --secondary: 330 60% 85%; 
+        --secondary-foreground: 330 60% 15%;
+
+        --muted: 40 30% 92%; 
+        --muted-foreground: 40 15% 45%;
+
+        --accent: 275 60% 75%; 
+        --accent-foreground: 275 60% 15%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 270 20% 88%; 
+        --input: 270 20% 92%; 
+        --ring: 260 70% 60%; 
+
+        --radius: 0.75rem;
+
+        /* Custom Palette Variables - Kaline Store */
+        --brand-primary-kaline: 260 70% 60%; 
+        --brand-secondary-kaline: 330 60% 85%;
+        --brand-background-kaline: 40 30% 97%; 
+        --brand-card-kaline: 0 0% 100%; 
+        --brand-text-kaline: 260 25% 25%; 
+        --brand-text-muted-kaline: 260 15% 50%;
+      }
+
+      .dark {
+        --background: 260 15% 10%;
+        --foreground: 260 15% 90%;
+
+        --card: 260 15% 15%;
+        --card-foreground: 260 15% 90%;
+
+        --popover: 260 15% 12%;
+        --popover-foreground: 260 15% 90%;
+
+        --primary: 260 60% 65%;
+        --primary-foreground: 260 60% 95%;
+
+        --secondary: 330 50% 70%;
+        --secondary-foreground: 330 50% 10%;
+
+        --muted: 40 15% 22%;
+        --muted-foreground: 40 10% 70%;
+
+        --accent: 275 50% 65%;
+        --accent-foreground: 275 50% 10%;
+
+        --destructive: 0 62.8% 50.6%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 260 15% 30%;
+        --input: 260 15% 35%;
+        --ring: 260 60% 65%;
+        
+        /* Custom Palette Variables - Dark Mode Kaline Store */
+        --brand-primary-kaline: 260 60% 65%; 
+        --brand-secondary-kaline: 330 50% 70%;
+        --brand-background-kaline: 260 15% 10%;
+        --brand-card-kaline: 260 15% 15%;
+        --brand-text-kaline: 260 25% 88%; 
+        --brand-text-muted-kaline: 260 15% 65%;
+      }
+
+      /* Accessibility Color Filters */
+      .protanopia-filter { filter: url(#protanopia); }
+      .deuteranopia-filter { filter: url(#deuteranopia); }
+      .tritanopia-filter { filter: url(#tritanopia); }
+      .achromatopsia-filter { filter: url(#achromatopsia); }
+    }
+
+    @layer base {
+      * {
+        @apply border-border;
+      }
+      body {
+        @apply bg-brand-background-kaline text-brand-text-kaline font-body;
+        font-feature-settings: "rlig" 1, "calt" 1;
+        -webkit-tap-highlight-color: transparent; 
+      }
+      h1, h2, h3, h4, h5, h6 {
+        @apply font-heading text-brand-text-kaline dark:text-brand-text-kaline;
+      }
+      
+      *:focus-visible {
+        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+      }
+    }
+
+    @layer components {
+      .btn-primary-kaline {
+        @apply bg-brand-primary-kaline text-primary-foreground hover:bg-brand-primary-kaline/90 focus-visible:ring-brand-primary-kaline;
+      }
+      .text-color-primary-kaline {
+        @apply text-brand-primary-kaline;
+      }
+    }
+
+    @layer utilities {
+      .text-balance {
+        text-wrap: balance;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .no-scrollbar {
+        -ms-overflow-style: none;  
+        scrollbar-width: none;  
+      }
+    }
