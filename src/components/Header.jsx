@@ -1,57 +1,69 @@
 import React, { useState, useEffect } from 'react';
-    import { Link, NavLink, useNavigate } from 'react-router-dom';
-    import { ShoppingCart, Heart, Sun, Moon, Menu, Search, User, LogOut, Settings, Cog } from 'lucide-react';
-    import { Button } from '@/components/ui/button';
-    import { Switch } from '@/components/ui/switch';
-    import { Label } from '@/components/ui/label';
-    import { useTheme } from '@/contexts/ThemeContext';
-    import { useAuth } from '@/contexts/AuthContext';
-    import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-    import {
-      DropdownMenu,
-      DropdownMenuContent,
-      DropdownMenuItem,
-      DropdownMenuTrigger,
-      DropdownMenuSeparator,
-      DropdownMenuLabel
-    } from "@/components/ui/dropdown-menu";
-    import { motion } from 'framer-motion';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { 
+  ShoppingCart, 
+  Heart, 
+  Sun, 
+  Moon, 
+  Menu, 
+  Search, 
+  User, 
+  LogOut, 
+  Settings, 
+  Cog 
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger, 
+  DropdownMenuSeparator, 
+  DropdownMenuLabel 
+} from "@/components/ui/dropdown-menu";
+import { motion } from 'framer-motion';
 
-    const navLinks = [
-      { to: "/category/novidades", label: "Novidades" },
-      { to: "/category/vestidos", label: "Vestidos" },
-      { to: "/category/acessorios", label: "Acessórios" },
-      { to: "/category/promocoes", label: "Promoções" },
-    ];
+const navLinks = [
+  { to: "/category/novidades", label: "Novidades" },
+  { to: "/category/vestidos", label: "Vestidos" },
+  { to: "/category/acessorios", label: "Acessórios" },
+  { to: "/category/promocoes", label: "Promoções" },
+];
 
-    const Header = () => {
-      const { theme, toggleTheme } = useTheme();
-      const { user, logout } = useAuth();
-      const navigate = useNavigate();
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-      const [colorFilter, setColorFilter] = useState('none');
-      
-      // Apply color filter to the entire page
-      useEffect(() => {
-        const root = document.documentElement;
-        
-        // Reset all filters first
-        root.style.filter = '';
-        
-        // Apply selected filter
-        switch(colorFilter) {
-          case 'protanopia':
-            root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'protanopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#protanopia")';
-            break;
-          case 'deuteranopia':
-            root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'deuteranopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#deuteranopia")';
-            break;
-          case 'tritanopia':
-            root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'tritanopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#tritanopia")';
-            break;
-          case 'achromatopsia':
-            root.style.filter = 'grayscale(100%)';
-            break;
+const Header = () => {
+  const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [colorFilter, setColorFilter] = useState('none');
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.style.filter = '';
+
+    switch (colorFilter) {
+      case 'protanopia':
+        root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'protanopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#protanopia")';
+        break;
+      case 'deuteranopia':
+        root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'deuteranopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#deuteranopia")';
+        break;
+      case 'tritanopia':
+        root.style.filter = 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'tritanopia\'><feColorMatrix in=\'SourceGraphic\' type=\'matrix\' values=\'0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0\'/></filter></svg>#tritanopia")';
+        break;
+      case 'achromatopsia':
+        root.style.filter = 'grayscale(100%)';
+        break;
+      default:
+        break;
+    }
+  }, [colorFilter]);
 
   const activeLinkClass = "text-brand-primary-kaline font-semibold border-b-2 border-brand-primary-kaline";
   const inactiveLinkClass = "hover:text-brand-primary-kaline transition-colors duration-300";
@@ -216,18 +228,18 @@ import React, { useState, useEffect } from 'react';
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
-                 <DropdownMenuItem className="sm:hidden focus:bg-transparent">
-                    <div className="flex items-center justify-between w-full">
-                       <Label htmlFor="dark-mode-toggle-mobile" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline">Modo Escuro</Label>
-                       <Switch
-                         id="dark-mode-toggle-mobile"
-                         checked={theme === 'dark'}
-                         onCheckedChange={toggleTheme}
-                         aria-label="Alternar modo escuro no mobile"
-                         className="data-[state=checked]:bg-brand-primary-kaline data-[state=unchecked]:bg-input"
-                       />
-                    </div>
-                 </DropdownMenuItem>
+                <DropdownMenuItem className="sm:hidden focus:bg-transparent">
+                  <div className="flex items-center justify-between w-full">
+                    <Label htmlFor="dark-mode-toggle-mobile" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline">Modo Escuro</Label>
+                    <Switch
+                      id="dark-mode-toggle-mobile"
+                      checked={theme === 'dark'}
+                      onCheckedChange={toggleTheme}
+                      aria-label="Alternar modo escuro no mobile"
+                      className="data-[state=checked]:bg-brand-primary-kaline data-[state=unchecked]:bg-input"
+                    />
+                  </div>
+                </DropdownMenuItem>
                 {!user && (
                   <DropdownMenuItem asChild>
                     <Link to="/login" className="block px-4 py-2 text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
@@ -236,8 +248,10 @@ import React, { useState, useEffect } from 'react';
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </motion.header>
-      );
-    };
+        </div>
+      </div>
+    </motion.header>
+  );
+};
 
-    export default Header;
+export default Header;

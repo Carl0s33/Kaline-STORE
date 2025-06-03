@@ -1,9 +1,12 @@
 {
   "name": "kaline-store",
   "type": "module",
+  "homepage": "https://github.com/Carl0s33/Kaline-STORE",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
