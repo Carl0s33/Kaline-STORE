@@ -23,9 +23,18 @@ import React, { useState, useEffect } from 'react';
       const [isFavorite, setIsFavorite] = React.useState(false);
       const [isLoading, setIsLoading] = useState(true);
 
-      const mockImages = (baseImage) => {
-          return [baseImage || "https://images.unsplash.com/photo-1600577916048-85e976972793?w=300"];
+      // Função para usar a imagem base64 do produto ou fallback para placeholder se necessário
+      const getProductImages = (product) => {
+        if (!product) return [];
+        
+        // Sempre priorizar a imagem base64 do produto
+        const baseImage = product.image && product.image.startsWith('data:image') 
+          ? product.image 
+          : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
+          
+        return [baseImage];
       };
+      
       const [productImages, setProductImages] = useState([]);
 
       useEffect(() => {
@@ -35,7 +44,7 @@ import React, { useState, useEffect } from 'react';
           setProduct(foundProduct);
           setSelectedSize(foundProduct.sizes && foundProduct.sizes.length > 0 ? foundProduct.sizes[0] : '');
           setSelectedColor(foundProduct.colors && foundProduct.colors.length > 0 ? foundProduct.colors[0] : '');
-          setProductImages(mockImages(foundProduct.image));
+          setProductImages(getProductImages(foundProduct));
           setCurrentImageIndex(0);
           
           const favs = JSON.parse(localStorage.getItem('favorites') || '[]');
@@ -116,17 +125,25 @@ import React, { useState, useEffect } from 'react';
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
             <div className="relative">
               <AnimatePresence initial={false} custom={currentImageIndex}>
-                <motion.img
+                <motion.div
                   key={currentImageIndex}
-                  src={productImages[currentImageIndex]}
-                  alt={`${product.name || 'Produto'} - imagem ${currentImageIndex + 1}`}
                   initial={{ opacity: 0, x: currentImageIndex > 0 ? 50 : -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: currentImageIndex > 0 ? -50 : 50 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg bg-gray-100 dark:bg-gray-800"
-                  loading="lazy"
-                />
+                  className="w-full aspect-[3/4] rounded-lg shadow-lg bg-gray-100 dark:bg-gray-800 overflow-hidden relative"
+                >
+                  <img
+                    src={productImages[currentImageIndex]}
+                    alt={`${product.name || 'Produto'} - imagem ${currentImageIndex + 1}`}
+                    className="w-full h-full object-cover absolute inset-0"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
+                    }}
+                  />
+                </motion.div>
               </AnimatePresence>
               {productImages.length > 1 && (
                 <>

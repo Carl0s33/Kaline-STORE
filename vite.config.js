@@ -1,5 +1,7 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
+
+import fs from 'fs';
 import { createLogger, defineConfig } from 'vite';
 
 const configHorizonsViteErrorHandler = `
@@ -181,11 +183,106 @@ logger.error = (msg, options) => {
 	loggerError(msg, options);
 }
 
+// Helper to read request body
+function getPostBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch (e) {
+        reject(e);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+const productsFilePath = path.resolve(__dirname, 'src/data/products.js');
+
+function updateProductsPlugin() {
+  return {
+    name: 'update-products-plugin',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        if (req.url === '/api/save-product' && req.method === 'POST') {
+          try {
+            const requestData = await getPostBody(req);
+            const { action, payload } = requestData;
+            
+            let fileContent = fs.readFileSync(productsFilePath, 'utf8');
+            
+            // Extrai o array de produtos atual. Isso é frágil e assume uma estrutura específica.
+            const productsMatch = fileContent.match(/const products = (\n*\s*)(\[[\s\S]*?\]);/m);
+            if (!productsMatch || !productsMatch[2]) {
+              console.error('Could not parse products array from products.js');
+              res.statusCode = 500;
+              res.end(JSON.stringify({ message: 'Could not parse products.js' }));
+              return;
+            }
+
+            let products;
+            try {
+              // Tenta avaliar o array de produtos. CUIDADO: eval é arriscado.
+              // Uma alternativa mais segura seria usar uma biblioteca para analisar JS ou converter products.js para JSON.
+              products = eval('(' + productsMatch[2] + ')'); 
+            } catch (e) {
+              console.error('Error evaluating products array:', e);
+              res.statusCode = 500;
+              res.end(JSON.stringify({ message: 'Error evaluating products array from products.js' }));
+              return;
+            }
+
+            if (action === 'add') {
+              const newId = String(products.length > 0 ? Math.max(...products.map(p => parseInt(p.id))) + 1 : 1);
+              products.push({ ...payload, id: newId });
+            } else if (action === 'update') {
+              const index = products.findIndex(p => String(p.id) === String(payload.id));
+              if (index !== -1) {
+                products[index] = { ...products[index], ...payload };
+              } else {
+                // Produto não encontrado para atualização, pode optar por adicionar ou retornar erro
+                // products.push(payload); // Adiciona se não encontrar
+                console.warn(`Product with ID ${payload.id} not found for update.`);
+                // Não faz nada ou retorna erro específico
+              }
+            } else {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ message: 'Invalid action' }));
+              return;
+            }
+
+            const newProductsArrayString = JSON.stringify(products, null, 2); // Pretty print
+            const updatedFileContent = fileContent.replace(
+              /const products = (\n*\s*)(\[[\s\S]*?\]);/m, 
+              `const products = ${productsMatch[1]}${newProductsArrayString};`
+            );
+
+            fs.writeFileSync(productsFilePath, updatedFileContent, 'utf8');
+            
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ message: 'Product saved successfully' }));
+          } catch (error) {
+            console.error('Error saving product:', error);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ message: 'Error saving product', error: error.message }));
+          }
+        } else {
+          next();
+        }
+      });
+    }
+  };
+}
+
 export default defineConfig({
   base: '/Kaline-STORE/',
-	base: '/Kaline-STORE/',
 	customLogger: logger,
-	plugins: [react(), addTransformIndexHtml],
+	plugins: [react(), updateProductsPlugin(), addTransformIndexHtml],
 	server: {
 		cors: true,
 		headers: {

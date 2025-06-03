@@ -86,11 +86,11 @@ import { ToastAction } from "@/components/ui/toast";
   alt={product.name || "Imagem do produto"}
   className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
   loading="lazy"
-  src={
-    product.image && (product.image.startsWith('data:image') || product.image.startsWith('http'))
-      ? product.image
-      : "https://images.unsplash.com/photo-1671376354106-d8d21e55dddd"
-  }
+  src={product.image || '/placeholder.svg'}
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = '/placeholder.svg';
+  }}
 />
                   </div>
                   <Tooltip>

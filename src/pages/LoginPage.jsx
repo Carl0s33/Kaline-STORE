@@ -55,10 +55,10 @@ import React, { useState, useEffect } from 'react';
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         let userData = null;
-        if (profileType === 'customer' && email === 'cliente@kaline.com' && password === 'cliente123') {
-          userData = { id: 'user1', name: 'Cliente Kaline', email, role: 'customer' };
-        } else if (profileType === 'seller' && email === 'vendedor@kaline.com' && password === 'vendedor123') {
-          userData = { id: 'seller1', name: 'Vendedor Kaline', email, role: 'seller' };
+        if (profileType === 'customer' && email === 'cliente@gmail.com' && password === 'cliente123') {
+          userData = { id: 'user1', name: 'Cliente', email, role: 'customer' };
+        } else if (profileType === 'seller' && email === 'vendedor@gmail.com' && password === 'vendedor123') {
+          userData = { id: 'seller1', name: 'Vendedor', email, role: 'seller' };
         }
 
         if (userData) {
