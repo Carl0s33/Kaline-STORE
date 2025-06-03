@@ -1,10 +1,10 @@
-import React, { Suspense, lazy } from 'react';
-    import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-    import Layout from '@/components/Layout';
-    import { ThemeProvider } from '@/contexts/ThemeContext';
-    import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-    import { ProductProvider } from '@/contexts/ProductContext';
-    import LoadingSpinner from '@/components/LoadingSpinner';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Layout from '@/components/Layout';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { ProductProvider } from '@/contexts/ProductContext';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
     const HomePage = lazy(() => import('@/pages/HomePage'));
     const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
@@ -44,6 +44,7 @@ import React, { Suspense, lazy } from 'react';
 
 
     function App() {
+  // ...
       return (
         <ThemeProvider>
           <AuthProvider>

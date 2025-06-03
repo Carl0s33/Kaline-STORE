@@ -130,9 +130,33 @@ import React, { useState, useEffect } from 'react';
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="image" className="text-sm font-medium text-brand-text-kaline">URL da Imagem</Label>
-                  <Input id="image" name="image" value={formData.image} onChange={handleChange} placeholder="https://exemplo.com/imagem.jpg" className="mt-1 bg-background dark:bg-input"/>
-                </div>
+  <Label htmlFor="image" className="text-sm font-medium text-brand-text-kaline">Imagem do Produto (anexe um arquivo)</Label>
+  <Input
+    id="image"
+    name="image"
+    type="file"
+    accept="image/*"
+    onChange={e => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData(prev => ({ ...prev, image: reader.result }));
+        };
+        reader.readAsDataURL(file);
+      }
+    }}
+    className="mt-1 bg-background dark:bg-input"
+  />
+  {formData.image && (
+    <img
+      src={formData.image}
+      alt="Prévia da Imagem"
+      className="mt-3 rounded-md max-h-40 object-contain border border-input"
+      style={{ maxWidth: '100%' }}
+    />
+  )}
+</div>
                 <div>
                   <Label htmlFor="sizes" className="text-sm font-medium text-brand-text-kaline">Tamanhos (separados por vírgula)</Label>
                   <Input id="sizes" name="sizes" value={formData.sizes} onChange={handleChange} placeholder="Ex: P, M, G, GG" className="mt-1 bg-background dark:bg-input"/>

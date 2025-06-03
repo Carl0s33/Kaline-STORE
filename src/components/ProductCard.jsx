@@ -1,12 +1,12 @@
 import React from 'react';
-    import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-    import { Button } from '@/components/ui/button';
-    import { Heart, ShoppingCart, Star, Eye } from 'lucide-react';
-    import { motion } from 'framer-motion';
-    import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-    import { Link } from 'react-router-dom';
-    import { useToast } from "@/components/ui/use-toast";
-    import { ToastAction } from "@/components/ui/toast";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Heart, ShoppingCart, Star, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Link } from 'react-router-dom';
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
     const ProductCard = ({ product }) => {
       const [isFavorite, setIsFavorite] = React.useState(() => {
@@ -73,20 +73,25 @@ import React from 'react';
 
       return (
         <TooltipProvider delayDuration={100}>
-          <motion.div
-            whileHover={{ y: -5, boxShadow: "0 8px 16px rgba(0,0,0,0.08)" }}
-            transition={{ duration: 0.2, ease: "circOut" }}
-            className="h-full"
-          >
-            <Card className="overflow-hidden rounded-lg shadow-md bg-brand-card-kaline dark:bg-card h-full flex flex-col transform transition-all duration-300 ease-in-out hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-primary-kaline focus-within:ring-offset-2">
-              <Link to={`/product/${product.id}`} className="block group focus:outline-none" aria-label={`Ver detalhes de ${product.name}`}>
-                <CardHeader className="p-0 relative">
-                  <div className="aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
-                      alt={product.name || "Imagem do produto"}
-                      className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
-                      loading="lazy"
-                     src="https://images.unsplash.com/photo-1671376354106-d8d21e55dddd" />
+  <motion.div
+    whileHover={{ y: -5, boxShadow: "0 8px 16px rgba(0,0,0,0.08)" }}
+    transition={{ duration: 0.2, ease: "circOut" }}
+    className="h-full"
+  >
+    <Card className="overflow-hidden rounded-lg shadow-md bg-brand-card-kaline dark:bg-card h-full flex flex-col transform transition-all duration-300 ease-in-out hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-primary-kaline focus-within:ring-offset-2">
+      <Link to={`/product/${product.id}`} className="block group focus:outline-none" aria-label={`Ver detalhes de ${product.name}`}>
+        <CardHeader className="p-0 relative">
+          <div className="aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <img 
+  alt={product.name || "Imagem do produto"}
+  className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
+  loading="lazy"
+  src={
+    product.image && (product.image.startsWith('data:image') || product.image.startsWith('http'))
+      ? product.image
+      : "https://images.unsplash.com/photo-1671376354106-d8d21e55dddd"
+  }
+/>
                   </div>
                   <Tooltip>
                     <TooltipTrigger asChild>

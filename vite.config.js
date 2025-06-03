@@ -182,6 +182,8 @@ logger.error = (msg, options) => {
 }
 
 export default defineConfig({
+  base: '/Kaline-STORE/',
+	base: '/Kaline-STORE/',
 	customLogger: logger,
 	plugins: [react(), addTransformIndexHtml],
 	server: {

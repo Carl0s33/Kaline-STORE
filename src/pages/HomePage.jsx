@@ -24,39 +24,49 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
       const [columns, setColumns] = useState('2'); 
       const { toast } = useToast();
       const [accessibilityFilter, setAccessibilityFilter] = useState('none');
+      const [isLoading, setIsLoading] = useState(true);
 
-      const [allSizes, setAllSizes] = useState([]);
+          const [allSizes, setAllSizes] = useState([]);
       const [allColors, setAllColors] = useState([]);
 
       const [selectedSizes, setSelectedSizes] = useState([]);
       const [selectedColors, setSelectedColors] = useState([]);
-      
+  
+      // Efeito para carregar os produtos e aplicar filtros
       useEffect(() => {
-        if (productsFromContext.length > 0) {
-          setAllSizes([...new Set(productsFromContext.flatMap(p => p.sizes || []))]);
-          setAllColors([...new Set(productsFromContext.flatMap(p => p.colors || []))]);
-        }
-
-        let filtered = productsFromContext;
-
-        if (selectedSizes.length > 0) {
-          filtered = filtered.filter(p => p.sizes && p.sizes.some(s => selectedSizes.includes(s)));
-        }
-        if (selectedColors.length > 0) {
-          filtered = filtered.filter(p => p.colors && p.colors.some(c => selectedColors.includes(c)));
-        }
+        setIsLoading(true);
         
-        setDisplayedProducts(filtered);
+        // Pequeno atraso para garantir que os produtos sejam carregados corretamente
+        const timer = setTimeout(() => {
+          if (productsFromContext && productsFromContext.length > 0) {
+            setAllSizes([...new Set(productsFromContext.flatMap(p => p.sizes || []))]);          
+            setAllColors([...new Set(productsFromContext.flatMap(p => p.colors || []))]);          
+          }
+
+          let filtered = productsFromContext || [];
+
+          if (selectedSizes.length > 0) {
+            filtered = filtered.filter(p => p.sizes && p.sizes.some(s => selectedSizes.includes(s)));
+          }
+          if (selectedColors.length > 0) {
+            filtered = filtered.filter(p => p.colors && p.colors.some(c => selectedColors.includes(c)));
+          }
+          
+          setDisplayedProducts(filtered);
+          setIsLoading(false);
+        }, 300);
+        
+        return () => clearTimeout(timer);
       }, [productsFromContext, selectedSizes, selectedColors]);
-
-
+  
+      // Efeito para mostrar o toast de boas-vindas
       useEffect(() => {
-        if (productsFromContext.length > 0) {
-             toast({
-                title: "Bem-vinda à Kaline Store!",
-                description: "Explore nossa coleção acessível e estilosa.",
-                duration: 3000,
-             });
+        if (productsFromContext && productsFromContext.length > 0) {
+          toast({
+            title: "Bem-vinda à Kaline Store!",
+            description: "Explore nossa coleção acessível e estilosa.",
+            duration: 3000,
+          });
         }
       }, [toast, productsFromContext]);
       
@@ -186,72 +196,42 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild className="md:hidden">
-                    <Button variant="outline" size="sm" className="flex items-center gap-1">
-                      <span>Colunas: {columns}</span>
-                      {columnOptions.find(opt => opt.value === columns)?.icon}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 md:hidden">
-                    <DropdownMenuLabel>Layout de Colunas</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {columnOptions.map(opt => (
-                      <DropdownMenuCheckboxItem
-                        key={`dropdown-${opt.value}`}
-                        checked={columns === opt.value}
-                        onCheckedChange={() => setColumns(opt.value)}
-                      >
-                        <div className="flex items-center gap-2">
-                          {opt.icon}
-                          <span>{opt.label}</span>
-                        </div>
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
+                {/* Seletor de grid unificado para todos os dispositivos */}
                 <RadioGroup
-                  defaultValue="2"
+                  value={columns}
                   onValueChange={setColumns}
-                  className="hidden md:flex items-center gap-1 p-0.5 bg-muted dark:bg-popover rounded-md"
-                  id="column-select"
+                  className="flex items-center gap-1 p-0.5 bg-muted dark:bg-popover rounded-md"
                   aria-label="Selecionar número de colunas da grade de produtos"
                 >
                   {columnOptions.map(opt => (
-                    <RadioGroupItem key={opt.value} value={opt.value} id={`col-${opt.value}`} className="sr-only" />
-                  ))}
-                  {columnOptions.map(opt => (
-                     <Label 
-                        key={`label-${opt.value}`} 
+                    <div key={`grid-option-${opt.value}`} className="relative">
+                      <RadioGroupItem value={opt.value} id={`col-${opt.value}`} className="sr-only" />
+                      <Label 
                         htmlFor={`col-${opt.value}`}
-                        className={`p-1.5 sm:p-2 rounded-sm cursor-pointer transition-colors ${columns === opt.value ? 'bg-brand-primary-kaline text-primary-foreground' : 'hover:bg-accent'}`}
+                        className={`min-w-8 h-8 flex items-center justify-center rounded-sm cursor-pointer transition-colors ${columns === opt.value ? 'bg-brand-primary-kaline text-primary-foreground' : 'hover:bg-accent text-brand-text-kaline dark:text-brand-text-muted-kaline'}`}
                         title={opt.label}
                       >
-                       {opt.icon}
-                     </Label>
+                        <span className="hidden sm:inline">{opt.icon}</span>
+                        <span className="sm:hidden">{opt.mobileLabel}</span>
+                      </Label>
+                    </div>
                   ))}
                 </RadioGroup>
-                
-                <div className="flex md:hidden mt-2 w-full justify-center">
-                  <div className="inline-flex items-center gap-1 p-1 bg-muted dark:bg-popover rounded-md">
-                    {columnOptions.map(opt => (
-                      <button
-                        key={`mobile-btn-${opt.value}`}
-                        onClick={() => setColumns(opt.value)}
-                        className={`min-w-8 h-8 flex items-center justify-center rounded-sm transition-colors ${columns === opt.value ? 'bg-brand-primary-kaline text-primary-foreground' : 'hover:bg-accent text-brand-text-kaline dark:text-brand-text-muted-kaline'}`}
-                        aria-label={opt.label}
-                      >
-                        {opt.mobileLabel}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
             
             <AnimatePresence>
-              {displayedProducts.length > 0 ? (
+              {isLoading ? (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="w-full py-20 flex justify-center items-center"
+                >
+                  <div className="h-16 w-16 rounded-full border-4 border-brand-primary-kaline border-t-transparent animate-spin">
+                    <span className="sr-only">Carregando produtos...</span>
+                  </div>
+                </motion.div>
+              ) : displayedProducts && displayedProducts.length > 0 ? (
                 <motion.div 
                   key={currentGridClass + selectedSizes.join(',') + selectedColors.join(',')}
                   initial={{ opacity: 0 }}

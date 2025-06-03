@@ -31,6 +31,13 @@ import { motion } from 'framer-motion';
 const navLinks = [
   { to: "/category/novidades", label: "Novidades" },
   { to: "/category/vestidos", label: "Vestidos" },
+  { to: "/category/camisetas", label: "Camisetas" },
+  { to: "/category/calcas", label: "Calças" },
+  { to: "/category/saias", label: "Saias" },
+  { to: "/category/shorts", label: "Shorts" },
+  { to: "/category/blusas", label: "Blusas" },
+  { to: "/category/conjuntos", label: "Conjuntos" },
+  { to: "/category/calcados", label: "Calçados" },
   { to: "/category/acessorios", label: "Acessórios" },
   { to: "/category/promocoes", label: "Promoções" },
 ];
@@ -80,18 +87,19 @@ const Header = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="sticky top-0 z-50 w-full border-b border-border/40 bg-brand-background-kaline/95 dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-brand-background-kaline/60 dark:supports-[backdrop-filter]:bg-background/60 shadow-sm"
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to="/" className="text-2xl sm:text-3xl font-heading font-bold text-brand-primary-kaline" aria-label="Página Inicial da Kaline Store">
+      <div className="w-full flex h-16 items-center justify-between px-2 sm:px-4 gap-2">
+
+        <Link to="/" className="flex-shrink-0 text-2xl sm:text-3xl font-heading font-bold text-brand-primary-kaline" aria-label="Página Inicial da Kaline Store">
           Kaline Store
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-4 lg:space-x-6" aria-label="Navegação principal">
+        <nav className="hidden sm:flex items-center gap-x-2 md:space-x-4 lg:space-x-6" aria-label="Navegação principal">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `${isActive ? activeLinkClass : inactiveLinkClass} text-sm font-medium`
+                `${isActive ? activeLinkClass : inactiveLinkClass} text-sm font-medium whitespace-nowrap`
               }
             >
               {link.label}
@@ -99,8 +107,8 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20" aria-label="Buscar produtos">
+        <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2">
+          <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 p-1.5 sm:p-2" aria-label="Buscar produtos">
             <Search className="h-5 w-5 text-brand-text-kaline dark:text-brand-text-muted-kaline" />
           </Button>
           <DropdownMenu>
@@ -108,17 +116,15 @@ const Header = () => {
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="relative rounded-full bg-brand-primary-kaline/10 hover:bg-brand-primary-kaline/20 border-brand-primary-kaline/30" 
+                className="relative rounded-full bg-brand-primary-kaline/10 hover:bg-brand-primary-kaline/20 border-brand-primary-kaline/30 p-1.5 sm:p-2" 
                 aria-label="Opções de acessibilidade"
               >
                 <Cog className="h-6 w-6 text-brand-primary-kaline animate-pulse" />
-                <span className="absolute -top-1 -right-1 bg-brand-primary-kaline text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">A</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 bg-brand-card-kaline dark:bg-card mt-2 p-3">
               <DropdownMenuLabel className="text-brand-primary-kaline px-2 py-1.5 text-base font-semibold">Acessibilidade</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              
               <div className="space-y-4 p-2">
                 <div className="flex items-center justify-between w-full">
                   <Label htmlFor="dark-mode-toggle-dropdown" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium">Modo Escuro</Label>
@@ -133,11 +139,9 @@ const Header = () => {
                     />
                   </div>
                 </div>
-                
                 <div className="space-y-2">
                   <Label className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium">Acessibilidade Visual</Label>
                   <p className="text-xs text-brand-text-muted-kaline">Filtro de Cor:</p>
-                  
                   <RadioGroup value={colorFilter} onValueChange={setColorFilter} className="space-y-1">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="none" id="filter-none" />
@@ -160,30 +164,26 @@ const Header = () => {
                       <Label htmlFor="filter-achromatopsia" className="text-sm cursor-pointer">Acromático</Label>
                     </div>
                   </RadioGroup>
-                  
                   <p className="text-xs text-brand-text-muted-kaline mt-2 italic">Esta é uma ferramenta de simulação para diferentes tipos de daltonismo.</p>
                 </div>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/favorites" aria-label="Ver produtos favoritos">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 p-1.5 sm:p-2">
               <Heart className="h-5 w-5 text-brand-text-kaline dark:text-brand-text-muted-kaline" />
             </Button>
           </Link>
           <Link to="/cart" aria-label="Ver carrinho de compras">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 relative">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 p-1.5 sm:p-2 relative">
               <ShoppingCart className="h-5 w-5 text-brand-text-kaline dark:text-brand-text-muted-kaline" />
               {/* <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span> */}
             </Button>
           </Link>
-          
-          {/* Dark mode toggle moved to top navigation */}
-
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20" aria-label="Menu do usuário">
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 p-1.5 sm:p-2" aria-label="Menu do usuário">
                   <User className="h-5 w-5 text-brand-text-kaline dark:text-brand-text-muted-kaline" />
                 </Button>
               </DropdownMenuTrigger>
@@ -201,56 +201,13 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 text-brand-text-kaline dark:text-brand-text-muted-kaline">
+            <Button asChild variant="ghost" size="sm" className="inline-flex hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 text-brand-text-kaline dark:text-brand-text-muted-kaline px-2 py-1 text-xs sm:text-sm">
               <Link to="/login">Login</Link>
             </Button>
           )}
-
-          <div className="md:hidden">
-            <DropdownMenu onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20" aria-label="Abrir menu mobile">
-                  <Menu className="h-6 w-6 text-brand-text-kaline dark:text-brand-text-muted-kaline" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-brand-card-kaline dark:bg-card mt-2">
-                {navLinks.map((link) => (
-                  <DropdownMenuItem key={link.to} asChild>
-                    <NavLink
-                      to={link.to}
-                      className={({ isActive }) =>
-                        `block px-4 py-2 text-sm ${isActive ? 'text-brand-primary-kaline font-semibold' : 'text-brand-text-kaline dark:text-brand-text-muted-kaline'}`
-                      }
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {link.label}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="sm:hidden focus:bg-transparent">
-                  <div className="flex items-center justify-between w-full">
-                    <Label htmlFor="dark-mode-toggle-mobile" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline">Modo Escuro</Label>
-                    <Switch
-                      id="dark-mode-toggle-mobile"
-                      checked={theme === 'dark'}
-                      onCheckedChange={toggleTheme}
-                      aria-label="Alternar modo escuro no mobile"
-                      className="data-[state=checked]:bg-brand-primary-kaline data-[state=unchecked]:bg-input"
-                    />
-                  </div>
-                </DropdownMenuItem>
-                {!user && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/login" className="block px-4 py-2 text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </div>
       </div>
-    </motion.header>
+      </motion.header>
   );
 };
 

@@ -24,19 +24,7 @@ import React, { useState, useEffect } from 'react';
       const [isLoading, setIsLoading] = useState(true);
 
       const mockImages = (baseImage) => {
-          if (!baseImage || baseImage.startsWith('http')) { // Check if it's a URL
-              return [
-                  baseImage || "https://images.unsplash.com/photo-1600577916048-85e976972793?w=300", 
-                  "https://images.unsplash.com/photo-1551803091-e3e467919757?w=300",
-                  "https://images.unsplash.com/photo-1568252540092-79c6ba39a239?w=300",
-              ];
-          }
-          // If it's not a URL, assume it's a placeholder description that needs a real image
-          return [
-              "https://images.unsplash.com/photo-1600577916048-85e976972793?w=300",
-              "https://images.unsplash.com/photo-1551803091-e3e467919757?w=300",
-              "https://images.unsplash.com/photo-1568252540092-79c6ba39a239?w=300",
-          ];
+          return [baseImage || "https://images.unsplash.com/photo-1600577916048-85e976972793?w=300"];
       };
       const [productImages, setProductImages] = useState([]);
 
@@ -48,11 +36,13 @@ import React, { useState, useEffect } from 'react';
           setSelectedSize(foundProduct.sizes && foundProduct.sizes.length > 0 ? foundProduct.sizes[0] : '');
           setSelectedColor(foundProduct.colors && foundProduct.colors.length > 0 ? foundProduct.colors[0] : '');
           setProductImages(mockImages(foundProduct.image));
+          setCurrentImageIndex(0);
+          
           const favs = JSON.parse(localStorage.getItem('favorites') || '[]');
           setIsFavorite(favs.includes(foundProduct.id));
         }
         setIsLoading(false);
-      }, [productId, getProductById]);
+      }, [productId, allProducts, getProductById]); // Adicionado allProducts e getProductById para re-executar quando os dados mudarem
 
       const handleNextImage = () => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % productImages.length);
@@ -182,7 +172,7 @@ import React, { useState, useEffect } from 'react';
                 </div>
                 <span className="text-sm text-brand-text-muted-kaline">({product.reviews} avaliações)</span>
               </div>
-              <p className="text-2xl sm:text-3xl font-semibold text-brand-primary-kaline">{product.price}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-brand-primary-kaline mb-2 sm:mb-4">{product.price}</p>
               
               {product.sizes && product.sizes.length > 0 && (
                 <div>
@@ -206,22 +196,24 @@ import React, { useState, useEffect } from 'react';
               {product.colors && product.colors.length > 0 && (
                 <div>
                   <Label htmlFor="color-group" className="text-sm font-medium text-brand-text-kaline dark:text-brand-text-kaline mb-1.5 block">Cor: <span className="font-normal">{selectedColor}</span></Label>
-                  <RadioGroup id="color-group" value={selectedColor} onValueChange={setSelectedColor} className="flex flex-wrap gap-2" aria-label="Seleção de cor">
-                    {product.colors.map(color => (
-                      <div key={color}>
-                        <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
-                        <Label 
-                          htmlFor={`color-${color}`}
-                          title={color}
-                          className={`w-7 h-7 sm:w-8 sm:h-8 border-2 rounded-full cursor-pointer transition-all flex items-center justify-center ${selectedColor === color ? 'ring-2 ring-brand-primary-kaline ring-offset-2 border-transparent' : 'border-input hover:border-brand-primary-kaline/50'}`}
-                          style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '').replace('ó', 'o').replace('ê', 'e') }} 
-                          aria-label={`Selecionar cor ${color}`}
-                        >
-                          {selectedColor === color && <CheckCircle className="h-4 w-4 text-white mix-blend-difference" />}
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+                  {product.colors.length > 1 && (
+                    <RadioGroup id="color-group" value={selectedColor} onValueChange={setSelectedColor} className="flex flex-wrap gap-2" aria-label="Seleção de cor">
+                      {product.colors.map(color => (
+                        <div key={color}>
+                          <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
+                          <Label 
+                            htmlFor={`color-${color}`}
+                            title={color}
+                            className={`w-7 h-7 sm:w-8 sm:h-8 border-2 rounded-full cursor-pointer transition-all flex items-center justify-center ${selectedColor === color ? 'ring-2 ring-brand-primary-kaline ring-offset-2 border-transparent' : 'border-input hover:border-brand-primary-kaline/50'}`}
+                            style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '').replace('ó', 'o').replace('ê', 'e') }} 
+                            aria-label={`Selecionar cor ${color}`}
+                          >
+                            {selectedColor === color && <CheckCircle className="h-4 w-4 text-white mix-blend-difference" />}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  )}
                 </div>
               )}
               
@@ -260,7 +252,7 @@ import React, { useState, useEffect } from 'react';
 
           {relatedProducts.length > 0 && (
             <div className="mt-12 sm:mt-16">
-              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-text-kaline dark:text-brand-text-kaline mb-4 sm:mb-6">Você também pode gostar</h2>
+              <h1 className="text-2xl sm:text-3xl font-bold font-heading text-brand-text-kaline dark:text-brand-text-kaline mb-1 sm:mb-2">Você também pode gostar</h1>
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 {relatedProducts.map(relatedProduct => (
                   <ProductCard key={relatedProduct.id} product={relatedProduct} />
