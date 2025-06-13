@@ -6,7 +6,7 @@ import React from 'react';
 
     const Footer = () => {
       return (
-        <footer className="bg-brand-card-kaline dark:bg-card border-t border-border/40 py-8 sm:py-12 mt-12 sm:mt-16">
+        <footer className="bg-brand-card-kaline dark:bg-black border-t border-border/40 py-8 sm:py-12 mt-12 sm:mt-16">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
               <div>
@@ -47,13 +47,13 @@ import React from 'react';
                 &copy; {new Date().getFullYear()} Kaline Store. Todos os direitos reservados.
               </p>
               <div className="flex space-x-4">
-                <a href="#" aria-label="Instagram Kaline Store" className="text-brand-text-muted-kaline hover:text-brand-primary-kaline transition-colors">
+                <a href="https://www.instagram.com/carlosdu.03/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Kaline Store" className="text-brand-text-muted-kaline hover:text-brand-primary-kaline transition-colors">
                   <Instagram size={18} />
                 </a>
                 <a href="#" aria-label="Facebook Kaline Store" className="text-brand-text-muted-kaline hover:text-brand-primary-kaline transition-colors">
                   <Facebook size={18} />
                 </a>
-                <a href="#" aria-label="Twitter Kaline Store" className="text-brand-text-muted-kaline hover:text-brand-primary-kaline transition-colors">
+                <a href="https://x.com/el_duduzinho" target="_blank" rel="noopener noreferrer" aria-label="Twitter Kaline Store" className="text-brand-text-muted-kaline hover:text-brand-primary-kaline transition-colors">
                   <Twitter size={18} />
                 </a>
               </div>

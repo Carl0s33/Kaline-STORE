@@ -10,23 +10,37 @@ import {
   User, 
   LogOut, 
   Settings, 
-  Cog 
+  Cog,
+  ChevronDown,
+  Contrast,
+  Type,
+  Minus,
+  Plus,
+  Ear,
+  EarOff,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger, 
+  DropdownMenuLabel, 
   DropdownMenuSeparator, 
-  DropdownMenuLabel 
+  DropdownMenuTrigger, 
+  DropdownMenuSub, 
+  DropdownMenuSubTrigger, 
+  DropdownMenuSubContent, 
+  DropdownMenuPortal 
 } from "@/components/ui/dropdown-menu";
 import { motion } from 'framer-motion';
+import products from '@/data/products';
 
 const navLinks = [
   { to: "/category/novidades", label: "Novidades" },
@@ -43,7 +57,19 @@ const navLinks = [
 ];
 
 const Header = () => {
-  const { theme, toggleTheme } = useTheme();
+  const productCategories = [...new Set(products.map(p => p.category))].sort();
+  const { 
+    theme, 
+    toggleTheme, 
+    highContrast, 
+    toggleHighContrast,
+    fontSize,
+    increaseFontSize,
+    decreaseFontSize,
+    resetFontSize,
+    screenReader,
+    toggleScreenReader
+  } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -105,6 +131,21 @@ const Header = () => {
               {link.label}
             </NavLink>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1 text-sm font-medium text-brand-text-muted-kaline hover:text-brand-text-kaline">
+                Categorias
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 bg-brand-card-kaline dark:bg-card">
+              {productCategories.map(category => (
+                <DropdownMenuItem key={category} asChild className="cursor-pointer hover:bg-brand-secondary-kaline/10 dark:hover:bg-accent/10">
+                  <Link to={`/category/${encodeURIComponent(category)}`} className="w-full">{category}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2">
@@ -139,7 +180,72 @@ const Header = () => {
                     />
                   </div>
                 </div>
+
+                <div className="flex items-center justify-between w-full">
+                  <Label htmlFor="high-contrast-toggle" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium flex items-center">
+                    <Contrast className="h-4 w-4 mr-2" />
+                    Alto Contraste
+                  </Label>
+                  <Switch
+                    id="high-contrast-toggle"
+                    checked={highContrast}
+                    onCheckedChange={toggleHighContrast}
+                    aria-label="Alternar alto contraste"
+                    className="data-[state=checked]:bg-brand-primary-kaline data-[state=unchecked]:bg-input"
+                  />
+                </div>
+
                 <div className="space-y-2">
+                  <Label className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium flex items-center">
+                    <Type className="h-4 w-4 mr-2" />
+                    Tamanho da Fonte
+                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 w-8 p-0" 
+                      onClick={decreaseFontSize}
+                      aria-label="Diminuir tamanho da fonte"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm">{fontSize}px</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 w-8 p-0" 
+                      onClick={increaseFontSize}
+                      aria-label="Aumentar tamanho da fonte"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 text-xs" 
+                      onClick={resetFontSize}
+                    >
+                      Padrão
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between w-full pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <Label htmlFor="screen-reader-toggle" className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium flex items-center">
+                    {screenReader ? <EarOff className="h-4 w-4 mr-2" /> : <Ear className="h-4 w-4 mr-2" />}
+                    Leitor de Tela
+                  </Label>
+                  <Switch
+                    id="screen-reader-toggle"
+                    checked={screenReader}
+                    onCheckedChange={toggleScreenReader}
+                    aria-label="Alternar leitor de tela"
+                    className="data-[state=checked]:bg-brand-primary-kaline data-[state=unchecked]:bg-input"
+                  />
+                </div>
+
+                <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
                   <Label className="text-sm text-brand-text-kaline dark:text-brand-text-muted-kaline font-medium">Acessibilidade Visual</Label>
                   <p className="text-xs text-brand-text-muted-kaline">Filtro de Cor:</p>
                   <RadioGroup value={colorFilter} onValueChange={setColorFilter} className="space-y-1">
@@ -164,7 +270,6 @@ const Header = () => {
                       <Label htmlFor="filter-achromatopsia" className="text-sm cursor-pointer">Acromático</Label>
                     </div>
                   </RadioGroup>
-                  <p className="text-xs text-brand-text-muted-kaline mt-2 italic">Esta é uma ferramenta de simulação para diferentes tipos de daltonismo.</p>
                 </div>
               </div>
             </DropdownMenuContent>
@@ -201,9 +306,42 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="ghost" size="sm" className="inline-flex hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 text-brand-text-kaline dark:text-brand-text-muted-kaline px-2 py-1 text-xs sm:text-sm">
-              <Link to="/login">Login</Link>
-            </Button>
+            <>
+              <div className="hidden md:flex">
+                <Button asChild variant="ghost" size="sm" className="inline-flex hover:bg-brand-secondary-kaline/20 dark:hover:bg-accent/20 text-brand-text-kaline dark:text-brand-text-muted-kaline px-2 py-1 text-xs sm:text-sm">
+                  <Link to="/login">Login</Link>
+                </Button>
+              </div>
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-6 w-6" />
+                      <span className="sr-only">Abrir menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 bg-brand-card-kaline dark:bg-card mt-2">
+                    <DropdownMenuItem asChild className="cursor-pointer hover:bg-brand-secondary-kaline/10 dark:hover:bg-accent/10">
+                      <Link to="/login" className="w-full">Login</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger className="cursor-pointer hover:bg-brand-secondary-kaline/10 dark:hover:bg-accent/10">
+                        <span>Categorias</span>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent className="bg-brand-card-kaline dark:bg-card">
+                          {productCategories.map(category => (
+                            <DropdownMenuItem key={category} asChild className="cursor-pointer hover:bg-brand-secondary-kaline/10 dark:hover:bg-accent/10">
+                              <Link to={`/category/${encodeURIComponent(category)}`}>{category}</Link>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </>
           )}
         </div>
       </div>

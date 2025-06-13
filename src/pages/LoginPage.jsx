@@ -47,7 +47,7 @@ import React, { useState, useEffect } from 'react';
         setIsSubmitting(true);
         
         if (!email || !password) {
-          toast({ title: "Erro", description: "Por favor, preencha todos os campos.", variant: "destructive", duration: 3000 });
+          toast({ title: "Ops!", description: "Não é você, sou eu ;(", variant: "destructive", duration: 3000 });
           setIsSubmitting(false);
           return;
         }
@@ -66,7 +66,7 @@ import React, { useState, useEffect } from 'react';
           toast({ title: "Login bem-sucedido!", description: `Bem-vindo(a) de volta, ${userData.name}!`, duration: 2500 });
           // Navigation is handled by the useEffect above
         } else {
-          toast({ title: "Erro de Login", description: "Email, senha ou tipo de perfil inválidos.", variant: "destructive", duration: 3000 });
+          toast({ title: "Ops!", description: "Não é você, sou eu ;(", variant: "destructive", duration: 3000 });
         }
         setIsSubmitting(false);
       };

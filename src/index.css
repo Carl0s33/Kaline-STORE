@@ -46,8 +46,8 @@
       }
 
       .dark {
-        --background: 260 15% 10%;
-        --foreground: 260 15% 90%;
+        --background: 0 0% 0%;  /* AMOLED black */
+        --foreground: 0 0% 100%;  /* Pure white for better contrast */
 
         --card: 260 15% 15%;
         --card-foreground: 260 15% 90%;
@@ -88,6 +88,59 @@
       .deuteranopia-filter { filter: url(#deuteranopia); }
       .tritanopia-filter { filter: url(#tritanopia); }
       .achromatopsia-filter { filter: url(#achromatopsia); }
+      
+      /* High Contrast Mode */
+      .high-contrast {
+        --brand-primary-kaline: 0 0% 0%;
+        --brand-secondary-kaline: 0 0% 100%;
+        --brand-background-kaline: 0 0% 100%;
+        --brand-card-kaline: 0 0% 100%;
+        --brand-text-kaline: 0 0% 0%;
+        --brand-text-muted-kaline: 0 0% 30%;
+        --border: 0 0% 0%;
+        --input: 0 0% 0%;
+      }
+      
+      .dark.high-contrast {
+        --brand-primary-kaline: 0 0% 100%;
+        --brand-secondary-kaline: 0 0% 0%;
+        --brand-background-kaline: 0 0% 0%;
+        --brand-card-kaline: 0 0% 10%;
+        --brand-text-kaline: 0 0% 100%;
+        --brand-text-muted-kaline: 0 0% 70%;
+        --border: 0 0% 100%;
+        --input: 0 0% 100%;
+      }
+      
+      .high-contrast * {
+        color: hsl(var(--brand-text-kaline)) !important;
+        background-color: hsl(var(--brand-background-kaline)) !important;
+        border-color: hsl(var(--brand-text-kaline)) !important;
+      }
+      
+      .high-contrast .bg-brand-card-kaline,
+      .high-contrast .bg-card {
+        background-color: hsl(var(--brand-card-kaline)) !important;
+        border: 2px solid hsl(var(--brand-text-kaline)) !important;
+      }
+      
+      .high-contrast .text-brand-primary-kaline,
+      .high-contrast .text-primary {
+        color: hsl(var(--brand-text-kaline)) !important;
+        text-decoration: underline !important;
+      }
+      
+      .high-contrast button,
+      .high-contrast [role="button"],
+      .high-contrast [type="button"],
+      .high-contrast [type="submit"] {
+        border: 2px solid hsl(var(--brand-text-kaline)) !important;
+        padding: 0.5rem 1rem !important;
+      }
+      
+      .high-contrast a {
+        text-decoration: underline !important;
+      }
     }
 
     @layer base {

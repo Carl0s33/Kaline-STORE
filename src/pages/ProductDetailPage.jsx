@@ -22,23 +22,31 @@ import React, { useState, useEffect } from 'react';
       const [currentImageIndex, setCurrentImageIndex] = useState(0);
       const [isFavorite, setIsFavorite] = React.useState(false);
       const [isLoading, setIsLoading] = useState(true);
+      const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-      // Função para usar a imagem base64 do produto ou fallback para placeholder se necessário
+      // Função para obter as imagens do produto
       const getProductImages = (product) => {
         if (!product) return [];
         
-        // Sempre priorizar a imagem base64 do produto
-        const baseImage = product.image && product.image.startsWith('data:image') 
-          ? product.image 
-          : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
-          
-        return [baseImage];
+        // Se o produto tiver uma imagem, usá-la
+        if (product.image) {
+          // Se for uma imagem base64 ou URL válida, retornar como está
+          if (product.image.startsWith('data:image') || 
+              product.image.startsWith('http') || 
+              product.image.startsWith('/')) {
+            return [product.image];
+          }
+        }
+        
+        // Se não houver imagem ou for inválida, retornar o placeholder
+        return ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+'];
       };
       
       const [productImages, setProductImages] = useState([]);
 
       useEffect(() => {
         setIsLoading(true);
+        setIsImageLoaded(false); // Reset image loaded state when product changes
         const foundProduct = getProductById(productId);
         if (foundProduct) {
           setProduct(foundProduct);
@@ -131,18 +139,38 @@ import React, { useState, useEffect } from 'react';
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: currentImageIndex > 0 ? -50 : 50 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="w-full aspect-[3/4] rounded-lg shadow-lg bg-gray-100 dark:bg-gray-800 overflow-hidden relative"
+                  className="w-full aspect-[3/4] rounded-lg shadow-lg bg-gray-100 dark:bg-gray-800 overflow-hidden relative flex items-center justify-center"
                 >
-                  <img
-                    src={productImages[currentImageIndex]}
-                    alt={`${product.name || 'Produto'} - imagem ${currentImageIndex + 1}`}
-                    className="w-full h-full object-cover absolute inset-0"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
-                    }}
-                  />
+                  {/* Placeholder */}
+                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+                    isImageLoaded ? 'opacity-0' : 'opacity-100'
+                  }`}>
+                    <svg width="40%" height="40%" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="200" height="200" fill="#EEEEEE"/>
+                      <path d="M84 127L64 107L44 127" stroke="#999999" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M152 64L132 44L112 64" stroke="#999999" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M128 128L100 100L72 128" stroke="#999999" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="100" cy="100" r="50" stroke="#999999" strokeWidth="6"/>
+                    </svg>
+                  </div>
+                  
+                  {/* Product Image */}
+                  {productImages[currentImageIndex] && (
+                    <img
+                      src={productImages[currentImageIndex]}
+                      alt={`${product.name || 'Produto'} - imagem ${currentImageIndex + 1}`}
+                      className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
+                        isImageLoaded ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      loading="lazy"
+                      onLoad={() => !isImageLoaded && setIsImageLoaded(true)}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.style.display = 'none';
+                        setIsImageLoaded(false);
+                      }}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
               {productImages.length > 1 && (

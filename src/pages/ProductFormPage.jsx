@@ -43,7 +43,7 @@ import React, { useState, useEffect } from 'react';
               colors: productToEdit.colors ? productToEdit.colors.join(', ') : '',
             });
           } else {
-            toast({ title: "Erro", description: "Produto não encontrado para edição.", variant: "destructive" });
+            toast({ title: "Ops!", description: "Não é você, sou eu ;(", variant: "destructive" });
             navigate('/seller/products');
           }
         } else {
@@ -115,7 +115,7 @@ import React, { useState, useEffect } from 'react';
         } else {
           // O toast de erro já é exibido pelo ProductContext
           // Poderia adicionar lógica adicional aqui se necessário, como não limpar o formulário
-          console.error("Falha ao salvar o produto no formulário:", result?.error);
+          console.error("Erro ao salvar o produto:", result?.error);
         } 
       };
 
@@ -154,7 +154,7 @@ import React, { useState, useEffect } from 'react';
                     alt={formData.name || "Imagem do produto"}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      console.log('Erro ao carregar imagem no cabeçalho');
+                      console.error('Erro ao carregar imagem no cabeçalho');
                       e.target.onerror = null;
                       e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
                       
@@ -246,7 +246,8 @@ import React, { useState, useEffect } from 'react';
                 } catch (error) {
                   console.error('Erro ao processar imagem:', error);
                   toast({
-                    title: "Erro ao processar imagem",
+                    title: "Ops!",
+                    description: "Não é você, sou eu ;(",
                     description: "Formato de imagem inválido ou corrompido. Tente novamente.",
                     variant: "destructive",
                     duration: 3000
@@ -255,8 +256,8 @@ import React, { useState, useEffect } from 'react';
               };
               reader.onerror = () => {
                 toast({
-                  title: "Erro ao carregar imagem",
-                  description: "Ocorreu um erro ao processar a imagem. Tente novamente.",
+                  title: "Ops!",
+                  description: "Não é você, sou eu ;(",
                   variant: "destructive",
                   duration: 3000
                 });
@@ -277,7 +278,7 @@ import React, { useState, useEffect } from 'react';
             alt="Prévia da Imagem"
             className="max-h-full max-w-full object-contain"
             onError={(e) => {
-              console.log('Erro ao carregar imagem de prévia');
+              console.error('Erro ao carregar imagem de prévia');
               e.target.onerror = null;
               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48cGF0aCBkPSJNODQgMTI3TDY0IDEwN0w0NCAxMjciIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTUyIDY0TDEzMiA0NEwxMTIgNjQiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTI4IDEyOEwxMDAgMTAwTDcyIDEyOCIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';
             }}
