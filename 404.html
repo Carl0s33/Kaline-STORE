@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Kaline Store</title>
+    <script>
+      // Redireciona para a página inicial e adiciona o caminho ao histórico
+      sessionStorage.redirect = location.href;
+      const redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      const baseUrl = window.location.origin + '/Kaline-STORE';
+      window.location.href = baseUrl + '/#' + 
+        (redirect ? new URL(redirect).pathname : '');
+    </script>
+  </head>
+  <body>
+    <h1>Redirecionando...</h1>
+  </body>
+</html>
