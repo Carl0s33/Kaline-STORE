@@ -1,0 +1,7 @@
+esse arquivo é só pra fazer um commit legal
+
+- commit feito com ❤️ e café
+- código testado? quem sabe...
+- mensagem de commit: 'sei la, arruma ai'
+
+mais uma linha pro arquivo de teste
