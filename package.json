@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d dist -b main",
     "dev": "vite",
     "build": "vite build --base=/Kaline-STORE/",
     "preview": "vite preview",
