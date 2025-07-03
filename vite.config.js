@@ -281,8 +281,13 @@ function updateProductsPlugin() {
 
 export default defineConfig({
   base: '/Kaline-STORE/',
-	customLogger: logger,
-	plugins: [react(), updateProductsPlugin(), addTransformIndexHtml],
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true,
+  },
+  customLogger: logger,
+  plugins: [react(), updateProductsPlugin(), addTransformIndexHtml],
 	server: {
 		cors: true,
 		headers: {
