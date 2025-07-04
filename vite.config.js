@@ -279,8 +279,8 @@ function updateProductsPlugin() {
   };
 }
 
-// Verifica se está em produção (GitHub Pages)
-const isGitHubPages = process.env.NODE_ENV === 'production';
+// Configuração para GitHub Pages
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
 const base = isGitHubPages ? '/Kaline-STORE/' : '/';
 
 export default defineConfig({
@@ -291,6 +291,14 @@ export default defineConfig({
     minify: 'terser',
     assetsDir: 'assets',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          vendor: ['framer-motion', 'lucide-react'],
+        },
+      },
+    },
   },
   customLogger: logger,
   plugins: [react(), updateProductsPlugin(), addTransformIndexHtml],

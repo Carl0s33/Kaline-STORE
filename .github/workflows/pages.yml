@@ -1,9 +1,18 @@
-name: Deploy to Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -18,12 +27,25 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
       
+      - name: Print versions
+        run: |
+          node -v
+          npm -v
+      
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci --no-audit
+          npm list --depth=0
       
       - name: Build
+        env:
+          NODE_ENV: production
+          VITE_BASE_URL: /Kaline-STORE/
         run: |
+          echo "Running build script..."
           npm run build
+          echo "Build completed. Directory structure:"
+          ls -la dist/
       
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -31,7 +53,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './dist'
+          path: 'dist'
   
   deploy:
     environment:
