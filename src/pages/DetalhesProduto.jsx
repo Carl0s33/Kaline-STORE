@@ -62,7 +62,7 @@ const ProductDetailPage = () => {
         setProductImages(getProductImages(fetchedProduct));
       }
       // desativa o loading, independente de ter dado certo ou nao
-      // #otimista
+
       setIsLoading(false);
     };
     // chama a funcao
