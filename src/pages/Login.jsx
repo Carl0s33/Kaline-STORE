@@ -9,45 +9,66 @@ import { Label } from '@/components/ui/rotulo';
 import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio';
 
 // ==============================
-// PÁGINA DE LOGIN
-// Onde você tenta lembrar qual senha usou da última vez
-// (dica: não é 'senha123')
+// PÁGINA DE LOGIN - ONDE A DIVERSÃO COMEÇA
+// ou termina, dependendo se vc lembra a senha
+// #esqueciminhasenha #naoeh1234
 // ==============================
+// aviso: contém código feito na pressa
+// se funcionar, foi sorte
+// se não funcionar, tenta 'admin/admin'
 const LoginPage = () => {
   // ===== ESTADOS =====
-  // (a parte chata que todo componente React tem)
+  // a parte que ninguem gosta de fazer
+  // mas tem que ter senao nao funciona
+  // #reactExigente #queriaquefosseoprimeiro
   
-  // Email (aquele que você esqueceu a senha 3x)
+  // email que vc jurou que lembrava
+  // mas na verdade usou aquele do ensino medio
   const [email, setEmail] = useState('');
   
-  // Senha (que você jurou que lembrava)
+  // senha que vc acha que é a certa
+  // mas ja tentou 3 vezes e ta bloqueado
   const [password, setPassword] = useState('');
   
-  // Tipo de perfil: 'customer' (cliente) ou 'seller' (vendedor)
-  // (escolha sabiamente, jovem padawan)
+  // tipo de perfil: cliente ou vendedor
+  // escolhe errado e se ferrou
+  // #escolhaserio #naotemvolta
   const [profileType, setProfileType] = useState('customer');
   
-  // Mostrar senha? Só se você estiver sozinho na sala
+  // mostrar senha? so se tiver sozinho
+  // ou se nao ligar pra privacidade mesmo
+  // #senhavisivel #fodase
   const [showPassword, setShowPassword] = useState(false);
   
-  // Estado de carregamento (aquela hora que você fica olhando pro loading)
+  // estado de carregamento
+  // aquele loading que nunca acaba
+  // #carregando #vaitravarnovamente
   const [isSubmitting, setIsSubmitting] = useState(false);
   // ===== HOOKS =====
-  // (a mágica do React que faz as coisas funcionarem)
+  // a magia negra do react
+  // se der pau, chuta o balde
   
-  // Hook para navegar entre páginas (tipo um GPS, mas mais confiável)
+  // hook pra navegar entre paginas
+  // tipo o maps, mas menos util
   const navigate = useNavigate();
   
-  // Hook para acessar a localização atual (não, não é o GPS do celular)
+  // hook pra pegar a localizacao
+  // nao, nao é o gps do seu celular
+  // #naoestoutevigiando #mentira
   const location = useLocation();
   
-  // Pega as funções de autenticação (login, logout, etc)
-  // Se não tiver, já era
+  // pega as funcoes de autenticacao
+  // se nao tiver, fudeu
+  // #tentedenovo #botaumalert
   const { login, user } = useAuth();
   
-  // Hook para mostrar notificações (aqueles popups chatos, mas úteis)
-  // Efeito que mostra mensagem de redirecionamento
-  // (tipo aquela mensagem chata de 'você precisa fazer login primeiro')
+  // hook pra mostrar notificacoes
+  // aqueles popups chatos que ninguem le
+  // #fechar #fechar #fechar
+  
+  // efeito que mostra mensagem de redirecionamento
+  // tipo quando vc tenta entrar sem estar logado
+  // e aparece 'faça login primeiro' como se vc nao soubesse
   const { notificar } = useNotificacao();
 
   const messageFromState = location.state?.message;
@@ -107,7 +128,7 @@ const LoginPage = () => {
         if (userData) {
           login(userData);
           notificar({ title: "Login bem-sucedido!", description: `Bem-vindo(a) de volta, ${userData.name}!`, duration: 2500 });
-          // Navigation is handled by the useEffect above
+          
         } else {
           notificar({ title: "Ops!", description: "Não é você, sou eu ;(", variant: "destructive", duration: 3000 });
         }

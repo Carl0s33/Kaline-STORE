@@ -6,8 +6,7 @@ import { ProvedorProdutos } from '@/contexts/ContextoProduto';
 import LoadingSpinner from '@/components/SpinnerCarregamento';
 import ErrorBoundary from '@/components/LimiteDeErro';
 
-// carrega os componentes só quando for usar mesmo
-// senão fica pesado o bagulho
+// Carregamento preguiçoso dos componentes para melhor performance
 const Layout = lazy(() => import('@/components/Estrutura'));
 const HomePage = lazy(() => import('@/pages/Inicio'));
 const CategoryPage = lazy(() => import('@/pages/Categoria'));
@@ -22,51 +21,41 @@ const CustomerProfilePage = lazy(() => import('@/pages/PerfilCliente'));
 const ManageProductsPage = lazy(() => import('@/pages/GerenciarProdutos'));
 const ProductFormPage = lazy(() => import('@/pages/FormularioProduto'));
 
-
-// rota protegida pra não deixar qualquer zé ruela acessar
-// se não tiver permissão, já era
+// Componente para rotas protegidas
 const ProtectedRoute = ({ children, allowedRoles, requireAuthForCheckout = false }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-      if (loading) {
-        return <LoadingSpinner />;
-      }
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
-      if (!user) {
-        if (requireAuthForCheckout) {
-          return <Navigate to="/login" state={{ from: location, message: "Você precisa estar logado para finalizar a compra." }} replace />;
-        }
-        return <Navigate to="/login" state={{ from: location }} replace />;
-      }
+  if (!user) {
+    if (requireAuthForCheckout) {
+      return <Navigate to="/login" state={{ from: location, message: "Você precisa estar logado para finalizar a compra." }} replace />;
+    }
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-      if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/" replace />; 
-      }
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/" replace />; 
+  }
 
-      return children;
-    };
+  return children;
+};
 
-
-// aqui começa a bagaça
-// se quebrar, chama o estagiário
 function App() {
+  // Obtém o caminho base do ambiente ou usa a raiz
+  const basePath = import.meta.env.BASE_URL || '/';
+
   return (
-    // retorna tudo que tem direito
-    // se faltar algo, já era
     <ThemeProvider>
-          <AuthProvider>
-            <ProvedorProdutos>
-      <ErrorBoundary>
-        {/* se der merda, esse cara segura a onda */}
-        {/* senão o usuário vê tela branca e chora */}
-        <Router>
-          {/* o router é o cara que gerencia as rotas */}
-          {/* se der pau aqui, o bicho pega */}
-          <Suspense fallback={<LoadingSpinner />}>
-            {/* enquanto carrega, mostra um loading */}
-            {/* senão o usuário acha que travou */}
-                    <Routes>
+      <AuthProvider>
+        <ProvedorProdutos>
+          <ErrorBoundary>
+            <Router basename={basePath}>
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
                       <Route path="/" element={<Layout />}>
                         <Route index element={<HomePage />} />
                         <Route path="category/:categoryName" element={<CategoryPage />} />

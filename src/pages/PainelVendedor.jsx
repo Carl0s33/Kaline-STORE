@@ -5,7 +5,7 @@ import React from 'react';
     import { PackagePlus, ListOrdered, BarChart3, Settings } from 'lucide-react';
 
     const SellerDashboardPage = () => {
-      // Placeholder data - replace with actual data fetching and state management
+    
       const stats = [
         { label: "Total de Produtos", value: "120", icon: ListOrdered },
         { label: "Vendas no Mês", value: "R$ 12.500,00", icon: BarChart3 },
@@ -37,7 +37,7 @@ import React from 'react';
             </Botao>
           </header>
 
-          {/* Stats Section */}
+       
           <section className="div-espacada">
             {stats.map((stat, index) => (
               <motion.div
@@ -56,7 +56,7 @@ import React from 'react';
             ))}
           </section>
 
-          {/* Quick Actions Section */}
+         
           <section>
             <h2 className="text-2xl font-semibold font-heading text-brand-text-kaline dark:text-brand-text-kaline mb-4">
               Ações Rápidas
@@ -77,7 +77,7 @@ import React from 'react';
             </div>
           </section>
 
-          {/* Placeholder for recent orders or product list */}
+          
           <section>
             <h2 className="text-2xl font-semibold font-heading text-brand-text-kaline dark:text-brand-text-kaline mb-4">
               Atividade Recente (Exemplo)

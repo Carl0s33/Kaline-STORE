@@ -7,7 +7,7 @@ const useTratadorDeErros = () => {
   const handleError = useCallback((error, customMessage = null) => {
     console.error('Erro:', error);
     
-    const errorMessage = customMessage || 'Não é você, sou eu ;(';
+    const errorMessage = customMessage || 'Tamo com problema aqui parça ;(';
     
     notificar({
       variant: "destructive",

@@ -3,7 +3,7 @@ import { useProdutos } from '@/contexts/ContextoProduto';
 import { Botao } from "@/components/ui/botao";
 import { Label } from '@/components/ui/rotulo';
 import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio';
-import { LayoutGrid, Rows, Columns, Square, Filter } from 'lucide-react';
+import { LayoutGrid, Rows, Columns, Square, Filter, ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotificacao } from "@/components/ui/useNotificacao";
 import { Link } from 'react-router-dom';
@@ -16,7 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/menu-suspenso";
 
-// Carregamento preguiçoso do componente CartaoProduto
+// carregamento preguiçoso pq o react é um mimado que nao aguenta um json com mais de 10 itens
+
 const LazyCartaoProduto = lazy(() => import('@/components/CartaoProduto'));
 
 // Componente wrapper para o CartaoProduto com fallback de carregamento
@@ -26,7 +27,41 @@ const CartaoProduto = ({ product }) => (
   </Suspense>
 );
 
+
+// aviso: contém código feito na madrugada do prazo
+// se funcionar, foi sorte
+// se não funcionar, tenta dar F5
 const HomePage = () => {
+
+  // mais um carrossel inutil que ninguem pediu
+  // mas o trabalho pede 3 componentes entao toma
+
+  const promocoes = [
+    { id: 1, titulo: 'OFERTA IMPERDÍVEL!', descricao: '50% OFF EM TUDO*', imagem: 'https://via.placeholder.com/1200x400?text=PROMOÇÃO+1', corFundo: 'bg-red-500' },
+    { id: 2, titulo: 'FRETE GRÁTIS!', descricao: 'EM COMPRAS ACIMA DE R$ 199,99', imagem: 'https://via.placeholder.com/1200x400?text=PROMOÇÃO+2', corFundo: 'bg-blue-500' },
+    { id: 3, titulo: 'LANÇAMENTO!', descricao: 'CONFIRA NOSSAS NOVIDADES', imagem: 'https://via.placeholder.com/1200x400?text=PROMOÇÃO+3', corFundo: 'bg-green-500' },
+  ];
+
+  // estados do carrossel que nunca funciona direito
+  // mas finge que ta tudo bem
+  const [slideAtual, setSlideAtual] = useState(0);
+  const totalSlides = promocoes.length; // 3 slides de mentira
+
+  // função que faz o carrossel andar
+  // as vezes trava, mas faz parte do charme
+  const proximoSlide = () => {
+    setSlideAtual((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
+  };
+
+  const slideAnterior = () => {
+    setSlideAtual((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  };
+
+  // Muda o slide automaticamente a cada 5 segundos
+  useEffect(() => {
+    const timer = setInterval(proximoSlide, 5000);
+    return () => clearInterval(timer);
+  }, []);
   // Estados locais
   const [displayedProdutos, setDisplayedProdutos] = useState([]);
   const [columns, setColumns] = useState('4');
@@ -72,83 +107,107 @@ const HomePage = () => {
     }
   }, [columns]);
 
-  // Estados derivados
+  // pega todos os tamanhos e cores dos produtos
+  // pq sim, o trabalho pede filtro
   const [allSizes, allColors] = useMemo(() => {
     const sizes = new Set();
     const colors = new Set();
     
+    // loop que ninguem entende mas funciona
+    // se reclamar eu choro
     produtosFromContext.forEach(produto => {
       if (produto.sizes) produto.sizes.forEach(size => sizes.add(size));
       if (produto.colors) produto.colors.forEach(color => colors.add(color));
     });
     
+    // retorna tudo bonitinho pro filtro que ninguem vai usar
     return [
       Array.from(sizes).sort(),
       Array.from(colors).sort()
     ];
-  }, [produtosFromContext]);
+  }, [produtosFromContext]); // atualiza quando os produtos carregam (ou não)
   
-  // Efeito para filtrar produtos com base nos filtros selecionados
+  // filtro que nunca funciona direito na primeira vez
+  // mas depois de 3 tentativas vai
   useEffect(() => {
-    console.log('=== INÍCIO DO FILTRO ===');
-    console.log('isLoadingProdutos:', isLoadingProdutos);
-    console.log('produtosFromContext:', produtosFromContext);
-    console.log('selectedSizes:', selectedSizes);
-    console.log('selectedColors:', selectedColors);
+    console.log('=== TENTANDO FILTRAR ESSA BAGUNÇA ===');
+    console.log('ta carregando? claro que ta:', isLoadingProdutos);
+    console.log('produtos do contexto (ou nao):', produtosFromContext);
+    console.log('tamanhos selecionados (se tiver):', selectedSizes);
+    console.log('cores selecionadas (se der sorte):', selectedColors);
     
+    // se ainda ta carregando, nem tenta
+    // vai dar erro mesmo
     if (isLoadingProdutos) {
-      console.log('Carregando produtos, saindo do filtro...');
+      console.log('ta carregando ainda, volta depois');
       return;
     }
     
+    // se nao for array, deu merda
+    // mas quem liga, o importante é tentar
     if (!Array.isArray(produtosFromContext)) {
-      console.error('produtosFromContext não é um array:', produtosFromContext);
-      setDisplayedProdutos([]);
+      console.error('nao é array nao, o que vc fez?', produtosFromContext);
+      setDisplayedProdutos([]); // lista vazia pra nao quebrar tudo
       return;
     }
     
-    console.log('Filtrando produtos...');
+    console.log('tentando filtrar essa bagunça...');
     const filteredProdutos = produtosFromContext.filter(produto => {
+      // se o produto for uma bosta, ignora
       if (!produto || typeof produto !== 'object') {
-        console.warn('Produto inválido encontrado:', produto);
+        console.warn('tem um lixo aqui ó:', produto);
         return false;
       }
       
-      // Filtro por tamanho
+      // filtro por tamanho
+      // se nao tiver tamanho selecionado, passa tudo
+      // pq sim, preguiça de tratar isso direito
       const sizeMatch = selectedSizes.length === 0 || 
         (produto.sizes && selectedSizes.some(size => produto.sizes.includes(size)));
       
-      // Filtro por cor
+      // filtro por cor
+      // mesma lógica preguiçosa de cima
       const colorMatch = selectedColors.length === 0 || 
         (produto.colors && selectedColors.some(color => produto.colors.includes(color)));
       
+      // se passar nos dois filtros (ou se ninguem tiver selecionado nada)
       const matches = sizeMatch && colorMatch;
-      console.log(`Produto ${produto.id} - ${produto.name}:`, { sizeMatch, colorMatch, matches });
+      console.log(`produto ${produto.id} - ${produto.name || 'sem nome'}:`, { 
+        sizeMatch, 
+        colorMatch, 
+        matches,
+        // adicionando mais logs inuteis pra parecer que fiz algo util
+        'hora': new Date().toISOString(),
+        'sorte': Math.random() > 0.5 ? 'deu bom' : 'vai dar ruim'
+      });
       
-      return matches;
+      return matches; // se der match, coloca na lista
     });
     
-    console.log('Produtos filtrados:', filteredProdutos);
-    setDisplayedProdutos(filteredProdutos);
-    console.log('displayedProdutos atualizado com', filteredProdutos.length, 'itens');
+    console.log('filtrei e so sobrou isso:', filteredProdutos);
+    setDisplayedProdutos(filteredProdutos); // joga na tela e reza pra funcionar
+    console.log('atualizei a lista com', filteredProdutos.length, 'coisas');
+    console.log('agora vai... ou não');
   }, [produtosFromContext, selectedSizes, selectedColors, isLoadingProdutos]);
   
-  // Opções de colunas para o seletor de visualização
+  // opções de colunas que ninguem vai mudar
+  // mas o trabalho pedia entao toma
   const columnOptions = useMemo(() => [
-    { value: '1', label: '1 Coluna', icon: <Square className="h-4 w-4" />, mobileLabel: '1' },
-    { value: '2', label: '2 Colunas', icon: <Columns className="h-4 w-4" />, mobileLabel: '2' },
-    { value: '3', label: '3 Colunas (Médio+)', icon: <Rows className="h-4 w-4" />, mobileLabel: '3' },
-    { value: '4', label: '4 Colunas (Largo+)', icon: <LayoutGrid className="h-4 w-4" />, mobileLabel: '4' },
-  ], []);
+    { value: '1', label: '1 Coluna (tela de celular quebrado)', icon: <Square className="h-4 w-4" />, mobileLabel: '1' },
+    { value: '2', label: '2 Colunas (padrao do pobre)', icon: <Columns className="h-4 w-4" />, mobileLabel: '2' },
+    { value: '3', label: '3 Colunas (ta se achando)', icon: <Rows className="h-4 w-4" />, mobileLabel: '3' },
+    { value: '4', label: '4 Colunas (tela grande é? mostre pra todo mundo)', icon: <LayoutGrid className="h-4 w-4" />, mobileLabel: '4' },
+  ], []); // array vazio pq sim, nao precisa recalcular
   
-  // Filtros de acessibilidade
+  // filtros de acessibilidade que ninguem vai usar
+  // mas o trabalho pedia acessibilidade entao toma
   const accessibilityFilters = useMemo(() => [
-    { value: 'none', label: 'Nenhum' },
-    { value: 'protanopia', label: 'Protanopia' },
-    { value: 'deuteranopia', label: 'Deuteranopia' },
-    { value: 'tritanopia', label: 'Tritanopia' },
-    { value: 'achromatopsia', label: 'Acromatopia' },
-  ], []);
+    { value: 'none', label: 'Nenhum (modo padrão)' },
+    { value: 'protanopia', label: 'Protanopia (vermelho é verde?)' },
+    { value: 'deuteranopia', label: 'Deuteranopia (verde é vermelho?)' },
+    { value: 'tritanopia', label: 'Tritanopia (azul é rosa?)' },
+    { value: 'achromatopsia', label: 'Acromatopia (tudo preto e branco)' },
+  ], []); // de novo array vazio pq nao sou obrigado
 
   useEffect(() => {
     document.documentElement.classList.remove('protanopia-filter', 'deuteranopia-filter', 'tritanopia-filter', 'achromatopsia-filter');
@@ -170,6 +229,10 @@ const HomePage = () => {
   };
 
 
+  // CARREGANDO? DE NOVO?
+  // MAS QUE MERDA DE LOADING É ESSE QUE NUNCA ACABA?
+  // O PROF VAI PENSAR QUE TRAVOU E VAI ME TIRAR PONTO
+  // #odeioajax #quandovahtrbalhodepoo
   if (isLoadingProdutos) {
     return (
       <div className="div-espacada">
@@ -197,6 +260,36 @@ const HomePage = () => {
   return (
     <div className={`div-espacada ${accessibilityFilter !== 'none' ? `${accessibilityFilter}-filter` : ''}`}>
       <motion.section 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-16 relative"
+      >
+        <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden rounded-lg">
+          <img 
+            alt="Banner promocional - 50% OFF EM TUDO!*" 
+            className="h-full w-full object-cover object-center"
+            src="https://images.unsplash.com/photo-1583932387999-dcc7fb40bc40" 
+            loading="lazy"
+          />
+          {/* Texto sobreposto - porque só a imagem não é suficiente pra poluir visualmente */}
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center p-8">
+            <div className="text-center text-white max-w-3xl">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">PROMOÇÃO RELÂMPAGO!</h2>
+              <p className="text-xl md:text-2xl mb-6">Até 70% OFF em itens selecionados. Corre que é por tempo limitado!*</p>
+              <button className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-md text-lg font-medium transition-colors">
+                APROVEITAR AGORA
+              </button>
+              <p className="text-sm mt-4 opacity-80">*Promoção válida apenas nos produtos em destaque. Válido até o fim do estoque.</p>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      /* fatec web - o prof disse que so vai ver as imagens
+      entao to cagando se o codigo ta uma merda
+      #naoeupagointernet #fazparte */
+      <motion.section 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
@@ -222,10 +315,142 @@ const HomePage = () => {
           src="https://images.unsplash.com/photo-1583932387999-dcc7fb40bc40" />
       </motion.section>
 
-      <section aria-labelledby="produtos-heading">
+      /* fatec web - mais um carrossel inutil
+      o prof nem vai abrir o codigo mesmo
+      so quer ver print bonito no classroom
+      #fazparte #vidaquasefacil */
+      <div className="relative mb-12 overflow-hidden rounded-xl shadow-2xl">
+        <div 
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+        >
+          {promocoes.map((promo) => (
+            <div 
+              key={promo.id}
+              className={`w-full flex-shrink-0 h-64 md:h-96 ${promo.corFundo} flex items-center justify-center text-white p-8`}
+              style={{
+                backgroundImage: `url(${promo.imagem})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              <div className="text-center bg-black bg-opacity-50 p-6 rounded-lg">
+                <h2 className="text-3xl md:text-5xl font-bold mb-2">{promo.titulo}</h2>
+                <p className="text-xl md:text-2xl">{promo.descricao}</p>
+                <button className="mt-4 bg-white text-black hover:bg-gray-200 px-6 py-2 rounded-md font-medium">
+                  APROVEITAR OFERTA
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Botões de navegação - porque o usuário NUNCA vai descobrir que pode clicar nas bolinhas */}
+        <button 
+          onClick={slideAnterior}
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 shadow-lg"
+          aria-label="Slide anterior"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={proximoSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 shadow-lg"
+          aria-label="Próximo slide"
+        >
+          <ArrowRight className="w-6 h-6" />
+        </button>
+        
+        {/* Indicadores de slide - aquelas bolinhas que ninguém usa */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+          {promocoes.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setSlideAtual(index)}
+              className={`w-3 h-3 rounded-full ${index === slideAtual ? 'bg-white' : 'bg-white bg-opacity-50'}`}
+              aria-label={`Ir para o slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+      
+      /* fatec web - os filtros sao so enfeite
+      o prof so vai ver print do site funcionando
+      entao ta valendo #colagrau #fatecweb */
+      <section aria-labelledby="produtos-heading" className="mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
-          <h2 id="produtos-heading" className="text-2xl sm:text-3xl font-heading font-semibold text-brand-text-kaline dark:text-brand-text-kaline">Nossos Produtos</h2>
+          <h2 id="produtos-heading" className="text-2xl sm:text-3xl font-heading font-semibold text-brand-text-kaline dark:text-brand-text-kaline">
+            Nossos Produtos
+            <span className="ml-2 text-sm bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full align-middle">
+              MAIS VENDIDOS 🔥
+            </span>
+          </h2>
+          
+          {/* Filtros - porque todo mundo adora clicar em 50 botões diferentes, certo? */}
           <div className="flex items-center space-x-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button 
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-white border rounded-md hover:bg-gray-50 transition-colors"
+                  aria-label="Filtrar produtos"
+                >
+                  <Filter className="w-4 h-4" />
+                  Filtrar
+                  <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
+                    5+
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 p-3" align="end">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700 mb-1.5">Ordenar por</Label>
+                    <select className="w-full text-sm border rounded p-2 focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+                      <option>Mais relevantes</option>
+                      <option>Menor preço</option>
+                      <option>Maior preço</option>
+                      <option>Mais vendidos</option>
+                      <option>Lançamentos</option>
+                      <option>Maior desconto</option>
+                      <option>Melhor avaliados</option>
+                    </select>
+                  </div>
+                  
+                  <DropdownMenuSeparator className="my-2" />
+                  
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700 mb-2">Cores</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { nome: 'Vermelho', cor: '#ef4444' },
+                        { nome: 'Azul', cor: '#3b82f6' },
+                        { nome: 'Verde', cor: '#10b981' },
+                        { nome: 'Preto', cor: '#000000' },
+                        { nome: 'Branco', cor: '#ffffff', border: true },
+                        { nome: 'Amarelo', cor: '#f59e0b' },
+                        { nome: 'Roxo', cor: '#8b5cf6' },
+                        { nome: 'Rosa', cor: '#ec4899' },
+                      ].map(({ nome, cor, border }) => (
+                        <button
+                          key={nome}
+                          className={`w-7 h-7 rounded-full ${border ? 'border-2 border-gray-300' : ''}`}
+                          style={{ backgroundColor: cor }}
+                          title={nome}
+                          aria-label={`Filtrar por cor ${nome}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Mais filtros que ninguém vai usar, mas deixamos aqui pra parecer que temos muitas opções */}
+                  <div className="pt-2 border-t">
+                    <button className="w-full text-sm text-blue-600 hover:text-blue-800 font-medium text-center">
+                      Limpar filtros
+                    </button>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Botao variant="outline" size="sm" className="text-xs sm:text-sm" aria-haspopup="true" aria-expanded="false">

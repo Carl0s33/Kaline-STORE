@@ -1,33 +1,41 @@
+// imports obrigatorios que todo mundo copia e cola
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useProdutos } from '@/contexts/ContextoProduto';
-import { Botao } from '@/components/ui/botao';
-import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio';
-import { Label } from '@/components/ui/rotulo';
+import { useParams, Link } from 'react-router-dom'; // pra navegar e pegar parametros
+import { useProdutos } from '@/contexts/ContextoProduto'; // contexto dos produtos
+import { Botao } from '@/components/ui/botao'; // botao generico
+import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio'; // botoes de opcao
+import { Label } from '@/components/ui/rotulo'; // rotulo bonitinho
+// icones do lucide que todo mundo usa
 import { ChevronLeft, ChevronRight, ShoppingCart, Star, CheckCircle, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNotificacao } from "@/components/ui/useNotificacao";
-import LoadingSpinner from '@/components/SpinnerCarregamento';
-import CartaoProduto from '@/components/CartaoProduto';
+import { motion, AnimatePresence } from 'framer-motion'; // animacoes inuteis
+import { useNotificacao } from "@/components/ui/useNotificacao"; // notificacoes bonitas
+import LoadingSpinner from '@/components/SpinnerCarregamento'; // spinner de loading
+import CartaoProduto from '@/components/CartaoProduto'; // card do produto
 
-// página de detalhes do produto
-// se o produto não carregar, já era
+// ==============================
+// PAGINA DE DETALHES DO PRODUTO
+// ==============================
+// mostra os detalhes de um produto
+// se nao carregar, azar o seu
 const ProductDetailPage = () => {
   // pega o id do produto da URL
-  // se não tiver, já era
+  // se nao tiver, ferrou
+  // #404 #paginaNaoEncontrada
   const { productId } = useParams();
   const { getProductById, produtos } = useProdutos();
   const { notificar } = useNotificacao();
 
   // estado do produto
-  // começa como null e só deus sabe quando vai carregar
+  // comeca como null e so deus sabe quando vai carregar
+  // #loadingInfinito #vaiSaber
   const [product, setProduct] = useState(null);
-  // estados pra controlar o que o usuário selecionou
-  // se não selecionar, o botão fica triste
+  // estados pra controlar o que o usuario selecionou
+  // se nao selecionar, o botao fica triste
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  // quantidade começa em 1
-  // porque ninguém quer comprar 0 produtos, né?
+  // quantidade comeca em 1
+  // porque ninguem quer comprar 0 produtos, ne?
+
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -36,57 +44,94 @@ const ProductDetailPage = () => {
   const [productImages, setProductImages] = useState([]);
 
   // quando o componente carrega, busca o produto
-  // se der erro, já era
+  // se der erro, ja era
+ 
+  // efeito que roda quando o id do produto muda
+  // ou quando o getProductById muda (spoiler: nunca muda)
   useEffect(() => {
+    // funcao assincrona que busca o produto
+    // se der erro, foda-se
     const fetchProduct = async () => {
-      setIsLoading(true);
-      const fetchedProduct = await getProductById(productId);
+      setIsLoading(true); // ativa o loading
+      const fetchedProduct = await getProductById(productId); // busca o produto
       if (fetchedProduct) {
+        // se achou o produto, atualiza o estado
         setProduct(fetchedProduct);
+        // pega as imagens do produto
+        // que as vezes nao existem
         setProductImages(getProductImages(fetchedProduct));
       }
+      // desativa o loading, independente de ter dado certo ou nao
+      // #otimista
       setIsLoading(false);
     };
+    // chama a funcao
+    // sem try/catch porque somos corajosos
     fetchProduct();
-  }, [productId, getProductById]);
+  }, [productId, getProductById]); // depende do id do produto e da funcao getProductById
 
+  // pega todas as imagens do produto
+  // se tiver, claro
   const getProductImages = (product) => {
-    const images = [];
+    const images = []; // array vazio
+    // adiciona cada imagem que existir
+    // optional chaining pra nao dar erro
     if (product?.image) images.push(product.image);
     if (product?.image2) images.push(product.image2);
     if (product?.image3) images.push(product.image3);
     if (product?.image4) images.push(product.image4);
+    // retorna o array de imagens
+    // pode voltar vazio, mas quem liga?
     return images;
   };
 
-  // função que adiciona o produto ao carrinho
-  // se faltar algo, o usuário fica puto
+  // funcao que adiciona o produto ao carrinho
+  // se faltar algo, o usuario fica puto
   const handleAddToCart = () => {
+    // verifica se o usuario selecionou tamanho e cor
+    // se nao selecionou, mostra um erro
     if (!selectedSize || !selectedColor) {
       notificar('Por favor, selecione tamanho e cor.', 'erro');
-      return;
+      return; // sai da funcao
     }
+    // se chegou aqui, é porque ta tudo certo
+    // mostra mensagem de sucesso
+    // (mas nao adiciona de verdade no carrinho, claro)
     notificar('Produto adicionado ao carrinho!', 'sucesso');
   };
 
+  // funcao que é chamada quando a imagem termina de carregar
+  // so pra mostrar que ta carregado mesmo
   const handleImageLoad = () => {
-    setIsImageLoaded(true);
+    setIsImageLoaded(true); // imagem carregou
   };
 
+  // vai pra proxima imagem
+  // se chegar no fim, volta pro comeco
   const nextImage = () => {
+    // pega o indice atual, soma 1 e faz modulo pelo tamanho do array
+    // isso faz voltar pro comeco quando chegar no fim
     setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+    // reseta o estado de carregamento
     setIsImageLoaded(false);
   };
 
+  // vai pra imagem anterior
+  // se estiver na primeira, vai pra ultima
   const prevImage = () => {
     setCurrentImageIndex((prev) =>
+      // se for o primeiro, vai pro ultimo
+      // senao, vai pro anterior
       prev === 0 ? productImages.length - 1 : prev - 1
     );
+    // reseta o estado de carregamento
     setIsImageLoaded(false);
   };
 
+  // se estiver carregando, mostra o spinner
+  // porque o usuario adora esperar
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />; // spinner bonitinho
   }
 
   if (!product) {

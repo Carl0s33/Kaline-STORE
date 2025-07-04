@@ -183,7 +183,7 @@ logger.error = (msg, options) => {
 	loggerError(msg, options);
 }
 
-// Helper to read request body
+// Função auxiliar para ler o corpo da requisição
 function getPostBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
@@ -279,10 +279,16 @@ function updateProductsPlugin() {
   };
 }
 
+// Verifica se está em produção (GitHub Pages)
+const isGitHubPages = process.env.NODE_ENV === 'production';
+const base = isGitHubPages ? '/Kaline-STORE/' : '/';
+
 export default defineConfig({
-  base: '/Kaline-STORE/',
+  base,
   build: {
     outDir: 'dist',
+    sourcemap: true,
+    minify: 'terser',
     assetsDir: 'assets',
     emptyOutDir: true,
   },

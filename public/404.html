@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaline Store</title>
+    <script>
+      // Redireciona para o caminho base e permite que o React Router gerencie o roteamento
+      const path = window.location.pathname;
+      const basePath = '/Kaline-STORE';
+      
+      // Se o caminho atual não começar com o basePath, redireciona
+      if (!path.startsWith(basePath)) {
+        window.history.replaceState('', '', basePath + path);
+      }
+      
+      // Força um recarregamento para permitir que o React Router gerencie o roteamento
+      window.location.reload();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <h1>Ative o JavaScript para acessar a Kaline Store</h1>
+      <p>Este site requer JavaScript para funcionar corretamente.</p>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
