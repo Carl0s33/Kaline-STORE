@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -37,6 +37,12 @@ jobs:
           npm ci --no-audit
           npm list --depth=0
       
+      - name: Create .nojekyll file
+        run: touch ./dist/.nojekyll
+        
+      - name: Copy 404.html
+        run: cp 404.html dist/
+      
       - name: Build
         env:
           NODE_ENV: production
@@ -46,6 +52,9 @@ jobs:
           npm run build
           echo "Build completed. Directory structure:"
           ls -la dist/
+          echo "Copying additional files..."
+          cp 404.html dist/
+          touch dist/.nojekyll
       
       - name: Setup Pages
         uses: actions/configure-pages@v3

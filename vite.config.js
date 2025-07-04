@@ -281,7 +281,7 @@ function updateProductsPlugin() {
 
 // Configuração para GitHub Pages
 const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
-const base = isGitHubPages ? '/Kaline-STORE/' : '/';
+const base = isGitHubPages ? '/Kaline-STORE' : '/';
 
 export default defineConfig({
   base,

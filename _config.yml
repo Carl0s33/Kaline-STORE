@@ -1,0 +1,7 @@
+# Configuração para desativar o Jekyll no GitHub Pages
+include: ["*"]
+exclude: []
+keep_files: ["CNAME", "favicon.ico"]
+plugins: []
+
+theme: null

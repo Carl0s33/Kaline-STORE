@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaline Store - Página não encontrada</title>
+  <script>
+    // Redireciona para a aplicação React
+    const path = window.location.pathname;
+    const basePath = '/Kaline-STORE';
+    
+    // Se o caminho atual não começar com o basePath, redireciona
+    if (!path.startsWith(basePath)) {
+      window.location.href = basePath + path;
+    } else {
+      // Se já estiver no caminho correto, redireciona para a raiz
+      window.location.href = basePath + '/';
+    }
+  </script>
+</head>
+<body>
+  <h1>Redirecionando para a Kaline Store...</h1>
+  <p>Se o redirecionamento não funcionar, <a href="/Kaline-STORE/">clique aqui</a>.</p>
+</body>
+</html>
