@@ -1,0 +1,2 @@
+import{r as i,h as r}from"./react-9XyJl28y.js";import{j as e,g as a}from"./index-BVjrFCz1.js";var s=["a","button","div","form","h2","h3","img","input","label","li","nav","ol","p","select","span","svg","ul"].reduce(((r,s)=>{const t=a(`Primitive.${s}`),n=i.forwardRef(((i,r)=>{const{asChild:a,...n}=i,o=a?t:s;return"undefined"!=typeof window&&(window[Symbol.for("radix-ui")]=!0),e.jsx(o,{...n,ref:r})}));return n.displayName=`Primitive.${s}`,{...r,[s]:n}}),{});function t(i,e){i&&r.flushSync((()=>i.dispatchEvent(e)))}export{s as P,t as d};
+//# sourceMappingURL=index-DElmoojr.js.map
