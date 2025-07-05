@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
+import './components/ui/endereco.css';
 
 // Tratamento de erros global
 class ErrorBoundary extends React.Component {
@@ -43,7 +44,11 @@ window.addEventListener('error', (event) => {
   event.preventDefault();
 });
 
+// Inicializa o root do React
 try {
+  const container = document.getElementById('root');
+  const root = createRoot(container);
+  
   root.render(
     <React.StrictMode>
       <ErrorBoundary>
@@ -53,13 +58,15 @@ try {
   );
 } catch (error) {
   console.error('Failed to render app:', error);
-  handleError(error);
   
-
+  const container = document.getElementById('root');
+  const root = createRoot(container);
+  
   root.render(
     <div style={{ padding: '2rem', textAlign: 'center' }}>
       <h1>Erro ao carregar o aplicativo</h1>
       <p>Por favor, tente recarregar a página ou entre em contato com o suporte.</p>
+      <p>Erro: {error.message}</p>
       <button onClick={() => window.location.reload()} style={{
         padding: '0.5rem 1rem',
         fontSize: '1rem',
@@ -68,6 +75,7 @@ try {
         color: 'white',
         border: 'none',
         borderRadius: '0.25rem',
+        marginTop: '1rem'
       }}>
         Recarregar Página
       </button>

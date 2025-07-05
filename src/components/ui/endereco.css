@@ -1,0 +1,218 @@
+/* Estilos para o componente de endereço */
+
+/* Contêiner principal */
+.div-destaque {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  overflow: hidden;
+}
+
+/* Estilos para tema escuro */
+.dark .div-destaque {
+  background-color: hsl(var(--brand-card-kaline));
+  border-color: hsla(var(--brand-primary-kaline) / 0.2);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+}
+
+/* Cabeçalho */
+.div-destaque > div:first-child {
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.dark .div-destaque > div:first-child {
+  background-color: hsla(var(--brand-primary-kaline) / 0.03);
+  border-bottom-color: hsla(var(--brand-primary-kaline) / 0.1);
+}
+
+/* Título */
+.div-destaque h3 {
+  color: hsl(var(--brand-text-kaline));
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card de endereço */
+.div-destaque [role="radiogroup"] {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.div-destaque [role="radiogroup"] label {
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--input));
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.dark .div-destaque [role="radiogroup"] label {
+  background-color: hsla(var(--brand-card-kaline) / 0.8);
+  border-color: hsla(var(--brand-primary-kaline) / 0.2);
+}
+
+.div-destaque [role="radiogroup"] label:hover {
+  border-color: hsla(var(--brand-primary-kaline) / 0.5);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.dark .div-destaque [role="radiogroup"] label:hover {
+  border-color: hsla(var(--brand-primary-kaline) / 0.5);
+  background-color: hsla(var(--brand-card-kaline) / 0.9);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.2);
+}
+
+/* Estilo para o item de endereço selecionado */
+.div-destaque [role="radiogroup"] label[data-state="checked"] {
+  border-color: hsl(var(--brand-primary-kaline));
+  background-color: hsla(var(--brand-primary-kaline) / 0.05);
+  box-shadow: 0 0 0 1px hsl(var(--brand-primary-kaline));
+}
+
+.dark .div-destaque [role="radiogroup"] label[data-state="checked"] {
+  background-color: hsla(var(--brand-primary-kaline) / 0.1);
+  border-color: hsla(var(--brand-primary-kaline) / 0.7);
+}
+
+/* Texto do endereço */
+.div-destaque [role="radiogroup"] p {
+  color: hsl(var(--brand-text-kaline));
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin: 0;
+}
+
+/* Texto secundário do endereço */
+.div-destaque [role="radiogroup"] p:last-child {
+  color: hsl(var(--brand-text-muted-kaline));
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-top: 0.25rem;
+}
+
+/* Botão de adicionar endereço */
+.div-destaque > div:last-child {
+  padding: 1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.dark .div-destaque > div:last-child {
+  border-top-color: hsla(var(--brand-primary-kaline) / 0.1);
+}
+
+.div-destaque button[type="button"]:not([role="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid hsla(var(--brand-primary-kaline) / 0.5);
+  color: hsl(var(--brand-primary-kaline));
+  background-color: transparent;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.dark .div-destaque button[type="button"]:not([role="radio"]) {
+  border-color: hsla(var(--brand-primary-kaline) / 0.7);
+  color: hsl(var(--brand-primary-kaline));
+}
+
+.div-destaque button[type="button"]:not([role="radio"]):hover {
+  background-color: hsla(var(--brand-primary-kaline) / 0.1);
+}
+
+.dark .div-destaque button[type="button"]:not([role="radio"]):hover {
+  background-color: hsla(var(--brand-primary-kaline) / 0.15);
+}
+
+/* Botão de deletar endereço */
+.div-destaque button[type="button"]:has(svg[stroke="currentColor"]) {
+  color: hsl(var(--destructive) / 0.8);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.dark .div-destaque button[type="button"]:has(svg[stroke="currentColor"]) {
+  color: hsl(var(--destructive) / 0.9);
+}
+
+.div-destaque button[type="button"]:has(svg[stroke="currentColor"]):hover {
+  background-color: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+}
+
+.dark .div-destaque button[type="button"]:has(svg[stroke="currentColor"]):hover {
+  background-color: hsl(var(--destructive) / 0.2);
+}
+
+/* Radio button personalizado */
+.div-destaque [role="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid hsl(var(--border));
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  margin-top: 0.25rem;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark .div-destaque [role="radio"] {
+  border-color: hsla(var(--brand-primary-kaline) / 0.5);
+}
+
+.div-destaque [role="radio"]:checked {
+  border-color: hsl(var(--brand-primary-kaline));
+}
+
+.div-destaque [role="radio"]::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.2s ease;
+  background-color: hsl(var(--brand-primary-kaline));
+}
+
+.div-destaque [role="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* Efeito de foco para acessibilidade */
+.div-destaque [role="radio"]:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Transições suaves */
+.div-destaque * {
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}

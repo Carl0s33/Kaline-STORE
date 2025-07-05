@@ -84,9 +84,12 @@ const CartPage = () => {
   };
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price?.replace('R$ ', '')?.replace(',', '.') || '0');
+    // Verifica se o preço é uma string e faz o parse adequado
+    const price = typeof item.price === 'string' 
+      ? parseFloat(item.price.replace('R$ ', '').replace('.', '').replace(',', '.') || '0')
+      : Number(item.price) || 0;
     const quantity = item.quantity || 0;
-    return sum + price * quantity;
+    return sum + (price * quantity);
   }, 0);
 
   const defaultImage = "https://images.unsplash.com/photo-1600577916048-85e976972793?w=100&h=100&fit=crop";

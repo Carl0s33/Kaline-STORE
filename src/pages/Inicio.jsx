@@ -3,7 +3,7 @@ import { useProdutos } from '@/contexts/ContextoProduto';
 import { Botao } from "@/components/ui/botao";
 import { Label } from '@/components/ui/rotulo';
 import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio';
-import { LayoutGrid, Rows, Columns, Square, Filter } from 'lucide-react';
+import { LayoutGrid, Rows, Columns, Square, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotificacao } from "@/components/ui/useNotificacao";
 import { Link } from 'react-router-dom';
@@ -229,8 +229,204 @@ const HomePage = () => {
     );
   }
 
+  // Dados das promoções para o carrossel
+  const promocoes = [
+    {
+      id: 1,
+      titulo: 'Ofertas Imperdíveis',
+      descricao: 'Até 50% de desconto em itens selecionados',
+      imagem: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      textoBotao: 'Aproveitar Ofertas',
+      link: '/ofertas'
+    },
+    {
+      id: 2,
+      titulo: 'Novos Lançamentos',
+      descricao: 'As últimas tendências chegaram na loja',
+      imagem: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      textoBotao: 'Ver Novidades',
+      link: '/novidades'
+    },
+    {
+      id: 3,
+      titulo: 'Frete Grátis',
+      descricao: 'Em compras acima de R$ 200,00',
+      imagem: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      textoBotao: 'Comprar Agora',
+      link: '/produtos'
+    }
+  ];
+
+  // Estado para controlar o slide atual
+  const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  
+  // Efeito para resetar o estado de carregamento quando o slide mudar
+  useEffect(() => {
+    setIsImageLoaded(false);
+  }, [currentPromoIndex]);
+  
+  // Função para lidar com o carregamento da imagem
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
+  
+  // Efeito para pré-carregar a próxima imagem
+  useEffect(() => {
+    const nextIndex = (currentPromoIndex + 1) % promocoes.length;
+    const img = new Image();
+    img.src = promocoes[nextIndex].imagem;
+  }, [currentPromoIndex, promocoes]);
+
+  // Avança para o próximo slide
+  const nextSlide = useCallback(() => {
+    setCurrentPromoIndex((prevIndex) => 
+      prevIndex === promocoes.length - 1 ? 0 : prevIndex + 1
+    );
+  }, [promocoes.length]);
+
+  // Volta para o slide anterior
+  const prevSlide = useCallback(() => {
+    setCurrentPromoIndex((prevIndex) =>
+      prevIndex === 0 ? promocoes.length - 1 : prevIndex - 1
+    );
+  }, [promocoes.length]);
+
+  // Estado para controlar se o usuário está interagindo com o carrossel
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Configura o intervalo para trocar os slides automaticamente
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000); // Muda a cada 5 segundos
+
+    return () => clearInterval(timer);
+  }, [nextSlide, isPaused]);
+  
+  // Pausa a troca automática quando o mouse está sobre o carrossel
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
+
   return (
     <div className={`div-espacada ${accessibilityFilter !== 'none' ? `${accessibilityFilter}-filter` : ''}`}>
+      {/* Carrossel de Promoções */}
+      <div 
+        className="relative w-full h-64 md:h-96 overflow-hidden rounded-lg mb-8 shadow-lg"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleMouseEnter}
+        onBlur={handleMouseLeave}
+      >
+        {/* Botões de navegação */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-brand-primary-kaline p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-primary-kaline focus:ring-offset-2"
+          aria-label="Slide anterior"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        
+        <button 
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-brand-primary-kaline p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-primary-kaline focus:ring-offset-2"
+          aria-label="Próximo slide"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+        
+        {/* Slides */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPromoIndex}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <div 
+              className="w-full h-full bg-cover bg-center relative overflow-hidden"
+              style={{ 
+                backgroundImage: `url(${promocoes[currentPromoIndex].imagem})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              {/* Overlay de loading */}
+              {!isImageLoaded && (
+                <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-brand-primary-kaline border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              
+              {/* Imagem real com transição suave */}
+              <img
+                src={promocoes[currentPromoIndex].imagem}
+                alt=""
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                  isImageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={handleImageLoad}
+                loading="lazy"
+              />
+              <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-center justify-center p-6 text-center transition-opacity duration-500 ${
+                isImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}>
+                <div className="text-white max-w-2xl">
+                  <motion.h2 
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-3xl md:text-5xl font-bold mb-2 md:mb-4"
+                  >
+                    {promocoes[currentPromoIndex].titulo}
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-lg md:text-xl mb-6 md:mb-8"
+                  >
+                    {promocoes[currentPromoIndex].descricao}
+                  </motion.p>
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <Link 
+                      to={promocoes[currentPromoIndex].link}
+                      className="inline-block bg-brand-primary-kaline hover:bg-brand-primary-kaline/90 text-white font-medium py-2 px-6 rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+                    >
+                      {promocoes[currentPromoIndex].textoBotao}
+                    </Link>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Indicadores de slide */}
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+          {promocoes.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPromoIndex(index)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === currentPromoIndex 
+                  ? 'w-8 bg-brand-primary-kaline' 
+                  : 'w-3 bg-white/70 hover:bg-white'
+              }`}
+              aria-label={`Ir para o slide ${index + 1}`}
+              aria-current={index === currentPromoIndex ? 'true' : 'false'}
+            />
+          ))}
+        </div>
+      </div>
 
 
 

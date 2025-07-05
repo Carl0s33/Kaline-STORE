@@ -91,13 +91,22 @@ const ProductDetailPage = () => {
     // verifica se o usuario selecionou tamanho e cor
     // se nao selecionou, mostra um erro
     if (!selectedSize || !selectedColor) {
-      notificar('Por favor, selecione tamanho e cor.', 'erro');
+      notificar({
+        title: 'Atenção',
+        description: 'Por favor, selecione tamanho e cor.',
+        variant: 'destructive',
+        duration: 3000
+      });
       return; // sai da funcao
     }
     // se chegou aqui, é porque ta tudo certo
     // mostra mensagem de sucesso
     // (mas nao adiciona de verdade no carrinho, claro)
-    notificar('Produto adicionado ao carrinho!', 'sucesso');
+    notificar({
+      title: 'Sucesso!',
+      description: 'Produto adicionado ao carrinho!',
+      duration: 2000
+    });
   };
 
   // funcao que é chamada quando a imagem termina de carregar

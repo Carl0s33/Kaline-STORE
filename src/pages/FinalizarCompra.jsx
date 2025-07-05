@@ -4,7 +4,15 @@ import { Botao } from '@/components/ui/botao';
 import { Entrada } from '@/components/ui/entrada';
 import { Label } from '@/components/ui/rotulo';
 import { GrupoRadio, ItemGrupoRadio } from '@/components/ui/grupo-radio';
-import { Cartao, ConteudoCartao, CabecalhoCartao, TituloCartao, RodapeCartao } from '@/components/ui/cartao-ui';
+import Cartao from '@/components/ui/cartao-ui';
+
+// Extrai os componentes do Cartao
+const {
+  Header,
+  Title,
+  Content,
+  Footer
+} = Cartao;
 import { useNotificacao } from "@/components/ui/useNotificacao";
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, CreditCard, Landmark, QrCode, MapPin, Edit2, PlusCircle, Trash2, CheckCircle } from 'lucide-react';
@@ -44,6 +52,40 @@ const CheckoutPage = () => {
   // 3: Hora do arrependimento (ops, revisão)
   const [currentStep, setCurrentStep] = useState(1);
   
+  // ===== FUNÇÕES DE NAVEGAÇÃO =====
+  // (a mágica que faz o botão 'próximo' funcionar)
+  const handleNextStep = () => {
+    if (currentStep < 3) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      // Aqui você pode adicionar a lógica para finalizar o pedido
+      // Por exemplo, enviar para uma API, limpar o carrinho, etc.
+      
+      // Simulação de processamento
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      notificar({
+        title: 'Pedido realizado com sucesso!',
+        description: 'Seu pedido foi processado e já está sendo preparado.',
+        variant: 'success'
+      });
+      
+      // Redireciona para a página de confirmação
+      navigate('/pedido-confirmado');
+    } catch (error) {
+      console.error('Erro ao finalizar pedido:', error);
+      notificar({
+        title: 'Ops, algo deu errado!',
+        description: 'Não foi possível processar seu pedido. Tente novamente mais tarde.',
+        variant: 'error'
+      });
+    }
+  };
+
   // ===== ENDEREÇOS =====
   // Lista de endereços (ou a desculpa que você dá pro motoboy quando atrasa)
   const [addresses, setAddresses] = useState([
@@ -91,8 +133,16 @@ const CheckoutPage = () => {
 
     // Fazendo contas de matemática avançada (multiplicação básica)
     const totalParcial = carrinhoSalvo.reduce((soma, item) => {
-      const preco = parseFloat(item.price.replace('R$ ', '').replace(',', '.'));
-      return soma + (preco * item.quantity);
+      // Verifica se o preço é uma string antes de tentar usar replace
+      let precoNumerico = 0;
+      if (typeof item.price === 'string') {
+        // Remove 'R$ ' e troca vírgula por ponto
+        precoNumerico = parseFloat(item.price.replace('R$ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+      } else if (typeof item.price === 'number') {
+        // Se já for número, usa diretamente
+        precoNumerico = item.price;
+      }
+      return soma + (precoNumerico * (item.quantity || 1));
     }, 0);
     
     setSubtotal(totalParcial); // Atualiza o subtotal (e o choro no coração)
@@ -317,7 +367,7 @@ const validateForm = () => {
                       {cartItems.map(item => (
                         <div key={item.id + item.size + item.color} className="flex justify-between items-center text-sm py-1 border-b border-border/50 last:border-b-0">
                           <span className="text-brand-text-muted-kaline">{item.name} (x{item.quantity})</span>
-                          <span className="text-brand-text-kaline">R$ {(parseFloat(item.price.replace('R$ ', '').replace(',', '.')) * item.quantity).toFixed(2).replace('.', ',')}</span>
+                          <span className="text-brand-text-kaline">R$ {((typeof item.price === 'string' ? parseFloat(item.price.replace('R$ ', '').replace(',', '.')) : Number(item.price)) * item.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                       ))}
                     </div>

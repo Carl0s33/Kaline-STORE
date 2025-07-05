@@ -1,5 +1,13 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Cartao, ConteudoCartao, RodapeCartao, CabecalhoCartao, TituloCartao } from '@/components/ui/cartao-ui';
+import Cartao from '@/components/ui/cartao-ui';
+
+// Extrai os componentes do Cartao
+const {
+  Content: ConteudoCartao,
+  Footer: RodapeCartao,
+  Header: CabecalhoCartao,
+  Title: TituloCartao
+} = Cartao;
 import { Botao } from '@/components/ui/botao';
 import { Heart, ShoppingCart, Star, Eye, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -135,12 +143,7 @@ const CartaoProduto = React.memo(({ product }) => {
         title: "Produto adicionado!",
         description: `${name} foi adicionado ao carrinho.`,
         duration: 3000,
-        className: "bg-green-500 text-white",
-        action: (
-          <ToastAction onClick={() => window.location.href = '/carrinho'}>
-            Ver Carrinho
-          </ToastAction>
-        )
+        className: "bg-green-500 text-white"
       });
       
       window.dispatchEvent(new CustomEvent('cartUpdated'));

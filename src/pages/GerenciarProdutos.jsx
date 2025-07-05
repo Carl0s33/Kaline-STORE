@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Botao } from '@/components/ui/botao';
-import { Cartao, ConteudoCartao, CabecalhoCartao, TituloCartao, RodapeCartao } from '@/components/ui/cartao-ui';
+import Cartao from '@/components/ui/cartao-ui';
+
+// Extrai os componentes do Cartao
+const {
+  Content: ConteudoCartao,
+  Header: CabecalhoCartao,
+  Title: TituloCartao,
+  Footer: RodapeCartao
+} = Cartao;
 import { Entrada } from '@/components/ui/entrada';
 import { useProdutos } from '@/contexts/ContextoProduto';
 import { motion, AnimatePresence } from 'framer-motion';
