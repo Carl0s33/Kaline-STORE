@@ -1,17 +1,8 @@
+const { build } = require('vite');
 
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-
-// Configuração básica do Vite
-export default defineConfig({
-  base: '/',
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  },
+build({
+  root: './',
+  base: '/Kaline-STORE/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -23,5 +14,5 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
-  },
+  }
 });

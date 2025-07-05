@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview --port 4173",
     "clean": "rimraf dist",
-    "deploy": "npm run build && gh-pages -d dist -b gh-pages"
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",
